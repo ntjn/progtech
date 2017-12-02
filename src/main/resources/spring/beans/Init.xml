@@ -1,0 +1,23 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- Stock business object -->
+  <!-- <bean id="stockBo" class="com.mkyong.stock.bo.impl.StockBoImpl" >
+    <property name="stockDao" ref="stockDao" />
+  </bean> -->
+
+  <!-- Stock Data Access Object -->
+  <!-- <tx:annotation-driven/> -->
+  <bean id="initDao" class="com.gameOfThrones.init.dao.InitDao" >
+   		<property name="sessionFactory" ref="sessionFactory"/>
+        <!-- <property name="flushMode" value="COMMIT"/> -->
+  </bean>
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>
+

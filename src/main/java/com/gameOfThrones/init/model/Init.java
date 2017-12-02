@@ -1,12 +1,12 @@
-package com.gameOfThrones.common;
+package com.gameOfThrones.init.model;
 
-public class init {
+public class Init {
 	
 	private Integer id;
 	private String name;
 	private String house;
 	
-	public init() { }
+	public Init() { }
 	
 	public Integer getId() {
 		return this.id;

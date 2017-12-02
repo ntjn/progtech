@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-  <class name="com.gameOfThrones.init.model.Init" table="initial">
+  <class name="com.got.common.model.Character" table="initial">
 	<id name="id" type="java.lang.Integer">
 	  <column name="id" />
 	  <generator class="identity" />

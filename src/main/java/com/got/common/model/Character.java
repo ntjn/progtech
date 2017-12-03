@@ -1,9 +1,16 @@
 package com.got.common.model;
 
+//import org.hibernate.annotations.DynamicUpdate;
+//import org.hibernate.cfg.*;
+
+//@DynamicUpdate
+//@Table
 public class Character {
 	
 	private Integer id;
 	private String name;
+	private Integer armySize;
+	private boolean state;
 	private String house;
 	
 	public Character() { }
@@ -23,6 +30,22 @@ public class Character {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+    public Integer getArmySize() {
+        return this.armySize;
+    }
+
+    public void setArmySize(Integer armySize) {
+        this.armySize = armySize;
+    }
+
+    public boolean getState() {
+        return this.state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
+    }
 	
 	public String getHouse() {
 		return this.house;

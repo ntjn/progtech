@@ -13,26 +13,16 @@ public class App
 {
     public static void main( String[] args )
     {        
-
-
-      	System.out.println("Blah");
-
         ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/beanLocations.xml");
-        //System.out.println(Arrays.asList(appContext.getBeanDefinitionNames()));
-
       	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
-      	//characterDao.getSessionFactory().getCurrentSession().setFlushMode(FlushMode.COMMIT);
-      	//characterDao.getSessionFactory().openSession().setFlushMode(FlushMode.MANUAL);
-      	//characterDao.getHibernateTemplate().getSessionFactory().getCurrentSession().setFlushMode(0);
-
-
-
 
       	Character character = new Character();
       	
       	character.setId(13);
-      	character.setHouse("Lannister");
       	character.setName("Tyrion");
+        character.setArmySize(5);
+        character.setState(false);
+      	character.setHouse("Lannister");
       	characterDao.save(character);
       	characterDao.flush();
       	

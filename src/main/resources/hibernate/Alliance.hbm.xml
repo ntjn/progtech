@@ -8,16 +8,16 @@
 	  <column name="id" />
 	  <generator class="identity" />
 	</id>
-	<property name="house_p" type="string">
-      <column name="house_p" length="32" not-null="true" unique="true" />
+	<property name="houseP" type="string">
+      <column name="houseP" length="32" not-null="true" unique="true" />
 	</property>
-	<property name="house_q" type="string">
-      <column name="house_q" length="32" not-null="true" unique="true" />
+	<property name="houseQ" type="string">
+      <column name="houseQ" length="32" not-null="true" unique="true" />
 	</property>
-    <property name="begin" type="datetime">
+    <property name="begin" type="java.sql.Timestamp">
       <column name="begin" not-null="true" unique="true" />
 	</property>
-    <property name="end" type="datetime">
+    <property name="end" type="java.sql.Timestamp">
       <column name="end" not-null="false" unique="true" />
 	</property>
   </class>

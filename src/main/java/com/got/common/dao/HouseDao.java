@@ -1,6 +1,6 @@
 package com.got.common.dao;
 
-import com.got.common.model.Character;
+import com.got.common.model.House;
 
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -8,18 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=false) 
 @EnableTransactionManagement
-public class CharacterDao extends HibernateDaoSupport {
+public class HouseDao extends HibernateDaoSupport {
 	
-	public void save(Character character){
-		getHibernateTemplate().save(character);
+	public void save(House house){
+		getHibernateTemplate().save(house);
 	}
 
-	public void update(Character character){
-		getHibernateTemplate().update(character);
+	public void update(House house){
+		getHibernateTemplate().update(house);
 	}
 
-	public void delete(Character character){
-		getHibernateTemplate().delete(character);
+	public void delete(House house){
+		getHibernateTemplate().delete(house);
 	}
 	
 	public void flush(){

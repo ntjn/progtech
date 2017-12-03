@@ -1,6 +1,6 @@
 package com.got.common.dao;
 
-import com.got.common.model.Character;
+import com.got.common.model.Alliance;
 
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -8,18 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=false) 
 @EnableTransactionManagement
-public class CharacterDao extends HibernateDaoSupport {
+public class AllianceDao extends HibernateDaoSupport {
 	
-	public void save(Character character){
-		getHibernateTemplate().save(character);
+	public void save(Alliance alliance){
+		getHibernateTemplate().save(alliance);
 	}
 
-	public void update(Character character){
-		getHibernateTemplate().update(character);
+	public void update(Alliance alliance){
+		getHibernateTemplate().update(alliance);
 	}
 
-	public void delete(Character character){
-		getHibernateTemplate().delete(character);
+	public void delete(Alliance alliance){
+		getHibernateTemplate().delete(alliance);
 	}
 	
 	public void flush(){

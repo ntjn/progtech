@@ -7,16 +7,27 @@ import org.hibernate.FlushMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Arrays; 
+
 public class App
 {
     public static void main( String[] args )
     {        
+
+
+      	System.out.println("Blah");
+
         ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/beanLocations.xml");
+        //System.out.println(Arrays.asList(appContext.getBeanDefinitionNames()));
 
       	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
-      	characterDao.getSessionFactory().getCurrentSession().setFlushMode(FlushMode.COMMIT);
+      	//characterDao.getSessionFactory().getCurrentSession().setFlushMode(FlushMode.COMMIT);
+      	//characterDao.getSessionFactory().openSession().setFlushMode(FlushMode.MANUAL);
+      	//characterDao.getHibernateTemplate().getSessionFactory().getCurrentSession().setFlushMode(0);
 
-      	/** insert **/
+
+
+
       	Character character = new Character();
       	
       	character.setId(13);

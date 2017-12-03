@@ -7,7 +7,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Transactional
+//@Transactional
+@Transactional(readOnly=false) 
 @EnableTransactionManagement
 public class CharacterDao extends HibernateDaoSupport {
 	

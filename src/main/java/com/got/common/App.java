@@ -3,7 +3,7 @@ package com.got.common;
 import com.got.common.dao.CharacterDao;
 import com.got.common.model.Character;
 
-import org.hibernate.FlushMode;
+//import org.hibernate.FlushMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

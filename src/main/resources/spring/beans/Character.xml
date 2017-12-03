@@ -9,12 +9,18 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/tx
   http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-<!--
-  xmlns:tx="http://www.springframework.org/schema/tx"
--->
-
   <!-- Character Data Access Object -->
   <bean id="characterDao" class="com.got.common.dao.CharacterDao" >
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <!-- House Data Access Object -->
+  <bean id="houseDao" class="com.got.common.dao.HouseDao" >
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <!-- Alliance Data Access Object -->
+  <bean id="allianceDao" class="com.got.common.dao.AllianceDao" >
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 

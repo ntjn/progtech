@@ -28,6 +28,8 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
     <property name="mappingResources">
 	<list>
       <value>hibernate/Character.hbm.xml</value>
+      <value>hibernate/House.hbm.xml</value>
+      <value>hibernate/Alliance.hbm.xml</value>
 	</list>
     </property>
 

@@ -2,6 +2,10 @@ package com.got.common.dao;
 
 import com.got.common.model.Character;
 
+import java.util.List;
+
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +29,47 @@ public class CharacterDao extends HibernateDaoSupport {
 	public void flush(){
 		getHibernateTemplate().flush();
 	}
+    
+    public List getList() {
+        String sqlQuery = "select * from characters";
 
-	/*public Stock findByStockCode(String stockCode){
-		List list = getHibernateTemplate().find(
-                      "from Stock where stockCode=?",stockCode
-                );
-	}*/
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        List lstData = query.list();
+        
+        return lstData;
+    }
+    
+    public List getList2() {
+        //String sqlQuery = "select * from (select * from characters) as c join (select * from houses) as h on (c.house = h.name)";
+    	String sqlQuery = "select c.id as id, c.armySize, c.house, h.name, h.crest, h.motto  from (select * from characters) as c join (select * from houses) as h on (c.house = h.name)";
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        List lstData = query.list();
+        
+        return lstData;
+    }
+
+    public List getCharacters() {
+    	String sqlQuery = "" +
+            "select c.id, c.armySize, c.house, h.name, h.crest, h.motto" +
+            "from" +
+                "(select * from characters) as c" +
+            "join" +
+                "(select * from houses) as h" +
+            "on" +
+                "(c.house = h.name)";
+
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+        
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        return query.list();
+    }
 }
 
 

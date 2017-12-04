@@ -1,13 +1,8 @@
 package com.got.common.model;
 
-//import org.hibernate.annotations.DynamicUpdate;
-//import org.hibernate.cfg.*;
-
-//@DynamicUpdate
-//@Table
 public class Character {
 	
-	private Integer id;
+    private Integer id;
 	private String name;
 	private Integer armySize;
 	private boolean state;

@@ -1,7 +1,9 @@
 package com.got.common.controller;
 
+import com.got.common.dao.AllianceDao;
 import com.got.common.dao.CharacterDao;
 import com.got.common.dao.HouseDao;
+import com.got.common.model.Alliance;
 import com.got.common.model.Character;
 import com.got.common.model.House;
 
@@ -14,72 +16,77 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-//import java.util.Collections;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.*;
 
 @Controller
+//@RestController
 public class GotController {
 
-    @RequestMapping("/addOneRow")
-    public void addOneRow() {
-        ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/BeanResources.xml");
+    private ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/BeanResources.xml");
 
+    @RequestMapping(value = "/")
+    public String index() {
+        return "index";
+    }
+
+    @RequestMapping(value = "/saveCharacter", method = RequestMethod.POST,  produces = "application/json")
+    public String cTest(@RequestBody Character character) {
       	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
-      	Character character = new Character();
       	
-      	character.setName("Ned");
-        character.setArmySize(5);
-        character.setState(false); //TODO to some number
-      	character.setHouse("Stark");
-      	characterDao.save(character);
-      	
+        characterDao.save(character);
+
+        return "index";
+    }
+
+    @RequestMapping(value = "/saveHouse", method = RequestMethod.POST,  produces = "application/json")
+    public String cTest(@RequestBody House house) {
       	HouseDao houseDao = (HouseDao)appContext.getBean("houseDao");
-      	House house = new House();
       	
-      	house.setName("Stark");
-      	house.setMotto("Winter is coming!");
-      	house.setCrest("Direwolf");
-      	houseDao.save(house);
+        houseDao.save(house);
+
+        return "index";
     }
 
-    /*@RequestMapping(value = "/getString", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Map<String, String> getString() {
-        return Collections.singletonMap("response", "your string value");
+    @RequestMapping(value = "/saveAlliance", method = RequestMethod.POST,  produces = "application/json")
+    public String cTest(@RequestBody Alliance alliance) {
+      	AllianceDao allianceDao = (AllianceDao)appContext.getBean("allianceDao");
+      	
+        allianceDao.save(alliance);
+
+        return "index";
     }
-    
-    @RequestMapping(value = "/getList", method = RequestMethod.GET, produces = "application/json")
+
+    @RequestMapping(value = "/getTHead", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List getList() {
-    	ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/BeanResources.xml");
-      	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
-    	
-        //return Collections.singletonMap("response", "your string value");
-    	return characterDao.getList();
-    }*/
-    
-    @RequestMapping(value = "/getCharacters", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List getCharacters() {
-    	ApplicationContext appContext = new ClassPathXmlApplicationContext("spring/config/BeanResources.xml");
+    public List getTHead() {
         JoinedDao joinedDao = (JoinedDao)appContext.getBean("joinedDao");
       	
-    	return joinedDao.getCharacters();
+    	return joinedDao.getTHead();
     }
     
+    @RequestMapping(value = "/getTBody", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List getTBody() {
+        JoinedDao joinedDao = (JoinedDao)appContext.getBean("joinedDao");
+      	
+    	return joinedDao.getTBody();
+    }
+
+    @RequestMapping(value = "/getCharColumns", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List getCharColumns() {
+        CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
+      	
+    	return characterDao.getCharColumns();
+    }
 }
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,12 @@
 package com.got.common.model;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.*;
+
 public class House {
 	
 	private Integer id;
@@ -8,6 +15,17 @@ public class House {
 	private String motto;
 	
 	public House() { }
+
+    public House(String name, String crest, String motto) {
+        this.name = name;
+        this.crest = crest;
+        this.motto = motto;
+    }
+
+    public House(Integer id, String name, String crest, String motto) {
+        this(name, crest, motto);
+        this.id = id;
+    }
 	
 	public Integer getId() {
 		return this.id;
@@ -41,4 +59,9 @@ public class House {
 		this.motto = motto;
 	}
 
+    @JsonCreator
+    public static House Create(String jsonString) throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(jsonString, House.class);
+    }
 }

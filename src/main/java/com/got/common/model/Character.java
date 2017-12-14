@@ -1,5 +1,12 @@
 package com.got.common.model;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.*;
+
 public class Character {
 	
     private Integer id;
@@ -9,6 +16,18 @@ public class Character {
 	private String house;
 	
 	public Character() { }
+
+	public Character(String name, Integer armySize, boolean state, String house) {
+        this.name = name;
+        this.armySize = armySize;
+        this.state = state;
+        this.house = house;
+    }
+
+	public Character(Integer id, String name, Integer armySize, boolean state, String house) {
+        this(name, armySize, state, house);
+        this.id = id;
+    }
 	
 	public Integer getId() {
 		return this.id;
@@ -49,4 +68,10 @@ public class Character {
 	public void setHouse(String house) {
 		this.house = house;
 	}
+
+    @JsonCreator
+    public static Character Create(String jsonString) throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(jsonString, Character.class);
+    }
 }

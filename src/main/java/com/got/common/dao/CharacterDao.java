@@ -1,7 +1,12 @@
 package com.got.common.dao;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.got.common.model.Character;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.hibernate.SQLQuery;
@@ -13,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=false) 
 @EnableTransactionManagement
 public class CharacterDao extends HibernateDaoSupport {
-	
+
 	public void save(Character character){
 		getHibernateTemplate().save(character);
 	}
@@ -63,6 +68,16 @@ public class CharacterDao extends HibernateDaoSupport {
                 "(select * from houses) as h" +
             "on" +
                 "(c.house = h.name)";
+
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+        
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        return query.list();
+    }
+
+    public List getCharColumns() {
+    	String sqlQuery = "show columns from characters";
 
     	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
         

@@ -25,12 +25,7 @@ public class AllianceDao extends HibernateDaoSupport {
 	public void flush(){
 		getHibernateTemplate().flush();
 	}
-
-	/*public Stock findByStockCode(String stockCode){
-		List list = getHibernateTemplate().find(
-                      "from Stock where stockCode=?",stockCode
-                );
-	}*/
+	
 }
 
 

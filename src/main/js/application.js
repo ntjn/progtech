@@ -3,6 +3,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const client = require('./client');
 
+import update from 'immutability-helper';
 
 class Table extends React.Component {
     constructor(props) {
@@ -24,6 +25,11 @@ class Table extends React.Component {
             method: 'GET', path: '/getTHead'
         }).done(response => {
             this.setState({ thead: response.entity });
+        });
+        client({
+            method: 'GET', path: '/getTBody'
+        }).done(response => {
+            this.setState({ tbody: response.entity });
         });
 
         client({
@@ -122,12 +128,12 @@ class New extends React.Component {
     render() {
         return (
             <div>
-                <select value="Új" onChange={this.handleNew}>
+                <select value="Új" onChange={this.props.handleNewData}>
                     <option name="new">Új</option>
                     <option name="char">Karakter</option>
                     <option name="house">Ház</option>
                 </select>
-                <select value="Módosítás" onChange={this.handleModify}>
+                <select value="Módosítás" onChange={this.handleModifyData}>
                     <option name="modify">Módosítás</option>
                     <option name="char">Karakter</option>
                     <option name="alliance">Szövetség</option>
@@ -154,20 +160,135 @@ class ChildOption extends React.Component {
   }
 }
 
-class Main extends React.Component {
+
+
+class Menu extends React.Component {
+    // TODO boolean parameter on filter
     render() {
         return (
-            <div className="content">
-                <div className="header">
-                    <New />
-                </div>
-                <div className="tble">
-                    <Table />
-                </div>
+            <div>
+                <select value="Új" onChange={this.props.handleNewData}>
+                    <option name="new">Új</option>
+                    <option name="char">Karakter</option>
+                    <option name="house">Ház</option>
+                </select>
+                <select value="Módosítás" onChange={this.handleModifyData}>
+                    <option name="modify">Módosítás</option>
+                    <option name="char">Karakter</option>
+                    <option name="alliance">Szövetség</option>
+                </select>
+                <button onClick={this.handleNewData}>Szövetség megadása</button>
+                <button onClick={this.handleFilter}>Szűrés karakterre</button>
+                <button onClick={this.handleFilter}>Szűrés megszüntetése</button>
             </div>
+        )
+    }
+}
+
+class PostDataForm extends React.Component {
+    constructor(props) {
+        super(props);
+        /*this.state = {
+            name: "",
+            house: ""
+        };*/
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.props.handleSubmit}>
+                <label>
+                    Name:
+                    <input type="text" value={this.props.data.name} onChange={ (e) => this.props.onChange(e, "name") } />
+                </label>
+                <label>
+                    House:
+                    <input type="text" value={this.props.data.house} onChange={ (e) => this.props.onChange(e, "house") } />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
         );
     }
 }
+
+class Main extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            form: {
+                name: "Stanley",
+                house: "Baratheon"
+            }
+        }
+
+        this.handleFormChange = this.handleFormChange.bind(this);
+    }
+
+    handleFormChange(event, field) {
+        this.setState(update(this.state, {
+          form: {
+            [field]: { $set: event.target.value }
+          }
+        }));
+        this.getHeaders();
+    }
+
+    handleFormSubmit(event) {
+        alert(this.state.form.name + this.state.form.house);
+    }
+
+    getHeaders() {
+        var rest, mime, client;
+
+        rest = require('rest'),
+        mime = require('rest/interceptor/mime');
+
+        client = rest.wrap(mime);
+        client({
+            method: 'POST',
+            path: '/getHeaders',
+            entity: JSON.stringify({ 
+                "name": "houses"
+            }),
+            headers: {
+                'Content-Type': "application/json;charset=utf-8"
+            }
+        }).done(response => 
+           response.entity.map(
+             row => {
+                this.setState(update(this.state, {
+                    form: {
+                        [row[0]]: { $set: "" }
+                    }
+             }));
+           })
+        );
+        console.log(this.state);
+    }
+
+    render() {
+        return (
+            <div>
+                <Menu
+                    handleNewData={this.handleNewData}
+                    handleModifyData={this.handleModifyData}
+                    handleFilter={this.handleFilter}
+                />
+                <Table />
+                <PostDataForm
+                    data={this.state.form}
+                    onChange={this.handleFormChange}
+                    handleSubmit={this.handleFormSubmit}
+                />
+            </div>
+        );
+    }
+
+                    //name={this.state.form.name}
+                    //house={this.state.form.house}
+}
+
+//<h3>{this.state.headers.characters}</h3>
 
 ReactDOM.render(
 	<Main />,

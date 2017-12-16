@@ -7,6 +7,8 @@ import com.got.common.model.Alliance;
 import com.got.common.model.Character;
 import com.got.common.model.House;
 
+import com.got.common.model.Form;
+
 import com.got.common.dao.JoinedDao;
 
 import org.springframework.stereotype.Controller;
@@ -88,5 +90,15 @@ public class GotController {
         CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
       	
     	return characterDao.getCharColumns();
+    }
+
+    // TODO sophisticated solution
+    @RequestMapping(value = "/getHeaders", method = RequestMethod.POST,  produces = "application/json")
+    @ResponseBody
+    public List getHeaders(@RequestBody Form form) {
+      	JoinedDao joinedDao = (JoinedDao)appContext.getBean("joinedDao");
+        System.out.println(form.getName());
+      	
+        return joinedDao.getHeaders(form.getName());
     }
 }

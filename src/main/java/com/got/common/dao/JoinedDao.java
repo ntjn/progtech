@@ -42,6 +42,16 @@ public class JoinedDao extends HibernateDaoSupport {
         return query.list();
     }
 
+    public List getHeaders(String table) {
+    	String sqlQuery = "show columns from " + table;
+
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+        
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        return query.list();
+    }
+
 }
 
 

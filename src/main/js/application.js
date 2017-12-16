@@ -128,7 +128,7 @@ class New extends React.Component {
     render() {
         return (
             <div>
-                <select value="Új" onChange={this.props.handleNewData}>
+                <select value="Új" onChange={ this.props.handleNewData }>
                     <option name="new">Új</option>
                     <option name="char">Karakter</option>
                     <option name="house">Ház</option>
@@ -163,21 +163,25 @@ class ChildOption extends React.Component {
 
 
 class Menu extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     // TODO boolean parameter on filter
     render() {
         return (
             <div>
                 <select value="Új" onChange={this.props.handleNewData}>
                     <option name="new">Új</option>
-                    <option name="char">Karakter</option>
-                    <option name="house">Ház</option>
+                    <option value="characters">Karakter</option>
+                    <option value="houses">Ház</option>
+                    <option value="alliances">Szövetség</option>
                 </select>
                 <select value="Módosítás" onChange={this.handleModifyData}>
                     <option name="modify">Módosítás</option>
                     <option name="char">Karakter</option>
                     <option name="alliance">Szövetség</option>
                 </select>
-                <button onClick={this.handleNewData}>Szövetség megadása</button>
                 <button onClick={this.handleFilter}>Szűrés karakterre</button>
                 <button onClick={this.handleFilter}>Szűrés megszüntetése</button>
             </div>
@@ -188,23 +192,17 @@ class Menu extends React.Component {
 class PostDataForm extends React.Component {
     constructor(props) {
         super(props);
-        /*this.state = {
-            name: "",
-            house: ""
-        };*/
     }
 
     render() {
         return (
             <form onSubmit={this.props.handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={this.props.data.name} onChange={ (e) => this.props.onChange(e, "name") } />
-                </label>
-                <label>
-                    House:
-                    <input type="text" value={this.props.data.house} onChange={ (e) => this.props.onChange(e, "house") } />
-                </label>
+                {Object.keys(this.props.data).map((field) => 
+                    <label key={field}>
+                        {field}
+                        <input type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } />
+                    </label>
+                )}
                 <input type="submit" value="Submit" />
             </form>
         );
@@ -215,13 +213,17 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            form: {
-                name: "Stanley",
-                house: "Baratheon"
-            }
+            form: { }
         }
 
+        this.handleNewData = this.handleNewData.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
+    }
+
+    handleNewData(event) {
+        console.log(this.state);
+        console.log(event.target.value);
+        this.getHeaders(event.target.value);
     }
 
     handleFormChange(event, field) {
@@ -237,7 +239,7 @@ class Main extends React.Component {
         alert(this.state.form.name + this.state.form.house);
     }
 
-    getHeaders() {
+    getHeaders(table) {
         var rest, mime, client;
 
         rest = require('rest'),
@@ -248,21 +250,22 @@ class Main extends React.Component {
             method: 'POST',
             path: '/getHeaders',
             entity: JSON.stringify({ 
-                "name": "houses"
+                "name": table
             }),
             headers: {
                 'Content-Type': "application/json;charset=utf-8"
             }
-        }).done(response => 
+        }).done(response => {
+           this.setState({ form: { } });
            response.entity.map(
              row => {
                 this.setState(update(this.state, {
                     form: {
                         [row[0]]: { $set: "" }
                     }
-             }));
+                }));
            })
-        );
+        });
         console.log(this.state);
     }
 
@@ -270,6 +273,7 @@ class Main extends React.Component {
         return (
             <div>
                 <Menu
+                    data={this.state.form}
                     handleNewData={this.handleNewData}
                     handleModifyData={this.handleModifyData}
                     handleFilter={this.handleFilter}
@@ -283,9 +287,6 @@ class Main extends React.Component {
             </div>
         );
     }
-
-                    //name={this.state.form.name}
-                    //house={this.state.form.house}
 }
 
 //<h3>{this.state.headers.characters}</h3>

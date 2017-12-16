@@ -292,16 +292,17 @@
 	var Menu = function (_React$Component4) {
 	    _inherits(Menu, _React$Component4);
 	
-	    function Menu() {
+	    function Menu(props) {
 	        _classCallCheck(this, Menu);
 	
-	        return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).apply(this, arguments));
+	        return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 	    }
+	
+	    // TODO boolean parameter on filter
+	
 	
 	    _createClass(Menu, [{
 	        key: 'render',
-	
-	        // TODO boolean parameter on filter
 	        value: function render() {
 	            return React.createElement(
 	                'div',
@@ -316,13 +317,18 @@
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { name: 'char' },
+	                        { value: 'characters' },
 	                        'Karakter'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { name: 'house' },
+	                        { value: 'houses' },
 	                        'H\xE1z'
+	                    ),
+	                    React.createElement(
+	                        'option',
+	                        { value: 'alliances' },
+	                        'Sz\xF6vets\xE9g'
 	                    )
 	                ),
 	                React.createElement(
@@ -343,11 +349,6 @@
 	                        { name: 'alliance' },
 	                        'Sz\xF6vets\xE9g'
 	                    )
-	                ),
-	                React.createElement(
-	                    'button',
-	                    { onClick: this.handleNewData },
-	                    'Sz\xF6vets\xE9g megad\xE1sa'
 	                ),
 	                React.createElement(
 	                    'button',
@@ -373,10 +374,6 @@
 	        _classCallCheck(this, PostDataForm);
 	
 	        return _possibleConstructorReturn(this, (PostDataForm.__proto__ || Object.getPrototypeOf(PostDataForm)).call(this, props));
-	        /*this.state = {
-	            name: "",
-	            house: ""
-	        };*/
 	    }
 	
 	    _createClass(PostDataForm, [{
@@ -387,22 +384,16 @@
 	            return React.createElement(
 	                'form',
 	                { onSubmit: this.props.handleSubmit },
-	                React.createElement(
-	                    'label',
-	                    null,
-	                    'Name:',
-	                    React.createElement('input', { type: 'text', value: this.props.data.name, onChange: function onChange(e) {
-	                            return _this8.props.onChange(e, "name");
-	                        } })
-	                ),
-	                React.createElement(
-	                    'label',
-	                    null,
-	                    'House:',
-	                    React.createElement('input', { type: 'text', value: this.props.data.house, onChange: function onChange(e) {
-	                            return _this8.props.onChange(e, "house");
-	                        } })
-	                ),
+	                Object.keys(this.props.data).map(function (field) {
+	                    return React.createElement(
+	                        'label',
+	                        { key: field },
+	                        field,
+	                        React.createElement('input', { type: 'text', value: _this8.props.data[field], onChange: function onChange(e) {
+	                                return _this8.props.onChange(e, field);
+	                            } })
+	                    );
+	                }),
 	                React.createElement('input', { type: 'submit', value: 'Submit' })
 	            );
 	        }
@@ -420,17 +411,22 @@
 	        var _this9 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 	
 	        _this9.state = {
-	            form: {
-	                name: "Stanley",
-	                house: "Baratheon"
-	            }
+	            form: {}
 	        };
 	
+	        _this9.handleNewData = _this9.handleNewData.bind(_this9);
 	        _this9.handleFormChange = _this9.handleFormChange.bind(_this9);
 	        return _this9;
 	    }
 	
 	    _createClass(Main, [{
+	        key: 'handleNewData',
+	        value: function handleNewData(event) {
+	            console.log(this.state);
+	            console.log(event.target.value);
+	            this.getHeaders(event.target.value);
+	        }
+	    }, {
 	        key: 'handleFormChange',
 	        value: function handleFormChange(event, field) {
 	            this.setState((0, _immutabilityHelper2.default)(this.state, {
@@ -445,7 +441,7 @@
 	        }
 	    }, {
 	        key: 'getHeaders',
-	        value: function getHeaders() {
+	        value: function getHeaders(table) {
 	            var _this10 = this;
 	
 	            var rest, mime, client;
@@ -457,13 +453,14 @@
 	                method: 'POST',
 	                path: '/getHeaders',
 	                entity: JSON.stringify({
-	                    "name": "houses"
+	                    "name": table
 	                }),
 	                headers: {
 	                    'Content-Type': "application/json;charset=utf-8"
 	                }
 	            }).done(function (response) {
-	                return response.entity.map(function (row) {
+	                _this10.setState({ form: {} });
+	                response.entity.map(function (row) {
 	                    _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
 	                        form: _defineProperty({}, row[0], { $set: "" })
 	                    }));
@@ -478,6 +475,7 @@
 	                'div',
 	                null,
 	                React.createElement(Menu, {
+	                    data: this.state.form,
 	                    handleNewData: this.handleNewData,
 	                    handleModifyData: this.handleModifyData,
 	                    handleFilter: this.handleFilter
@@ -490,10 +488,6 @@
 	                })
 	            );
 	        }
-	
-	        //name={this.state.form.name}
-	        //house={this.state.form.house}
-	
 	    }]);
 	
 	    return Main;

@@ -8,6 +8,8 @@ import com.got.common.model.Character;
 import com.got.common.model.House;
 
 import com.got.common.model.Form;
+import com.got.common.model.Field;
+import com.got.common.model.FieldOfTable;
 
 import com.got.common.dao.JoinedDao;
 
@@ -42,7 +44,7 @@ public class GotController {
     }
 
     @RequestMapping(value = "/saveCharacter", method = RequestMethod.POST,  produces = "application/json")
-    public String cTest(@RequestBody Character character) {
+    public String saveCharacter(@RequestBody Character character) {
       	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
       	
         characterDao.save(character);
@@ -50,8 +52,17 @@ public class GotController {
         return "index";
     }
 
+    @RequestMapping(value = "/updateCharacter", method = RequestMethod.POST,  produces = "application/json")
+    public String updateCharacter(@RequestBody Character character) {
+      	CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
+      	
+        characterDao.update(character);
+
+        return "index";
+    }
+
     @RequestMapping(value = "/saveHouse", method = RequestMethod.POST,  produces = "application/json")
-    public String cTest(@RequestBody House house) {
+    public String saveHouse(@RequestBody House house) {
       	HouseDao houseDao = (HouseDao)appContext.getBean("houseDao");
       	
         houseDao.save(house);
@@ -60,7 +71,7 @@ public class GotController {
     }
 
     @RequestMapping(value = "/saveAlliance", method = RequestMethod.POST,  produces = "application/json")
-    public String cTest(@RequestBody Alliance alliance) {
+    public String saveAlliance(@RequestBody Alliance alliance) {
       	AllianceDao allianceDao = (AllianceDao)appContext.getBean("allianceDao");
       	
         allianceDao.save(alliance);
@@ -84,14 +95,6 @@ public class GotController {
     	return joinedDao.getTBody();
     }
 
-    @RequestMapping(value = "/getCharColumns", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public List getCharColumns() {
-        CharacterDao characterDao = (CharacterDao)appContext.getBean("characterDao");
-      	
-    	return characterDao.getCharColumns();
-    }
-
     // TODO sophisticated solution
     @RequestMapping(value = "/getHeaders", method = RequestMethod.POST,  produces = "application/json")
     @ResponseBody
@@ -100,5 +103,13 @@ public class GotController {
         System.out.println(form.getName());
       	
         return joinedDao.getHeaders(form.getName());
+    }
+
+    @RequestMapping(value = "/getRecord", method = RequestMethod.POST,  produces = "application/json")
+    @ResponseBody
+    public List getRecord(@RequestBody FieldOfTable field) {
+      	JoinedDao joinedDao = (JoinedDao)appContext.getBean("joinedDao");
+      	
+        return joinedDao.getRecord(field);
     }
 }

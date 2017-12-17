@@ -122,7 +122,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log(this);
 	            return React.DOM.table({ className: "MyClassName" }, React.DOM.thead(null, React.DOM.tr(null, this.state.thead.map(function (title) {
 	                return React.DOM.th({ key: title }, title);
 	            }))), React.DOM.tbody(null, this.state.tbody.map(function (row, i) {
@@ -138,11 +137,6 @@
 	
 	var New = function (_React$Component2) {
 	    _inherits(New, _React$Component2);
-	
-	    /*var rest, mime, client;
-	     rest = require('rest');
-	    mime = require('rest/interceptor/mime');
-	    client = rest.wrap(mime);*/
 	
 	    function New(props) {
 	        _classCallCheck(this, New);
@@ -333,20 +327,20 @@
 	                ),
 	                React.createElement(
 	                    'select',
-	                    { value: 'M\xF3dos\xEDt\xE1s', onChange: this.handleModifyData },
+	                    { value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
 	                    React.createElement(
 	                        'option',
-	                        { name: 'modify' },
+	                        { value: 'modify' },
 	                        'M\xF3dos\xEDt\xE1s'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { name: 'char' },
+	                        { value: 'characters' },
 	                        'Karakter'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { name: 'alliance' },
+	                        { value: 'alliances' },
 	                        'Sz\xF6vets\xE9g'
 	                    )
 	                ),
@@ -411,20 +405,51 @@
 	        var _this9 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 	
 	        _this9.state = {
-	            form: {}
+	            form: {},
+	            selected: "",
+	            update: false
 	        };
 	
+	        _this9.rest = __webpack_require__(187);
+	        _this9.mime = __webpack_require__(215);
+	        _this9.client = _this9.rest.wrap(_this9.mime);
+	
 	        _this9.handleNewData = _this9.handleNewData.bind(_this9);
+	        _this9.handleModifyData = _this9.handleModifyData.bind(_this9);
 	        _this9.handleFormChange = _this9.handleFormChange.bind(_this9);
+	        _this9.handleFormSubmit = _this9.handleFormSubmit.bind(_this9);
+	        _this9.zip = _this9.zip.bind(_this9);
 	        return _this9;
 	    }
 	
 	    _createClass(Main, [{
+	        key: 'zip',
+	        value: function zip(p, q) {
+	            if (p.length > 1 || q.length > 2) {
+	                return this.zip(p.slice(1), q.slice(1)).concat([[p[0], q[0]]]);
+	            } else {
+	                return [[p[0], q[0]]];
+	            }
+	        }
+	    }, {
 	        key: 'handleNewData',
 	        value: function handleNewData(event) {
-	            console.log(this.state);
-	            console.log(event.target.value);
 	            this.getHeaders(event.target.value);
+	            this.setState((0, _immutabilityHelper2.default)(this.state, {
+	                selected: { $set: event.target.value },
+	                update: { $set: false }
+	            }));
+	        }
+	    }, {
+	        key: 'handleModifyData',
+	        value: function handleModifyData(event) {
+	            var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
+	            this.getHeaders(event.target.value);
+	            this.getRecord(event.target.value, field);
+	            this.setState((0, _immutabilityHelper2.default)(this.state, {
+	                selected: { $set: event.target.value },
+	                update: { $set: true }
+	            }));
 	        }
 	    }, {
 	        key: 'handleFormChange',
@@ -432,24 +457,19 @@
 	            this.setState((0, _immutabilityHelper2.default)(this.state, {
 	                form: _defineProperty({}, field, { $set: event.target.value })
 	            }));
-	            this.getHeaders();
 	        }
 	    }, {
 	        key: 'handleFormSubmit',
 	        value: function handleFormSubmit(event) {
-	            alert(this.state.form.name + this.state.form.house);
+	            event.preventDefault();
+	            this.postForm();
 	        }
 	    }, {
 	        key: 'getHeaders',
 	        value: function getHeaders(table) {
 	            var _this10 = this;
 	
-	            var rest, mime, client;
-	
-	            rest = __webpack_require__(187), mime = __webpack_require__(215);
-	
-	            client = rest.wrap(mime);
-	            client({
+	            this.client({
 	                method: 'POST',
 	                path: '/getHeaders',
 	                entity: JSON.stringify({
@@ -459,14 +479,66 @@
 	                    'Content-Type': "application/json;charset=utf-8"
 	                }
 	            }).done(function (response) {
-	                _this10.setState({ form: {} });
+	                _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
+	                    form: { $set: {} }
+	                }));
 	                response.entity.map(function (row) {
 	                    _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
 	                        form: _defineProperty({}, row[0], { $set: "" })
 	                    }));
 	                });
 	            });
+	        }
+	    }, {
+	        key: 'getRecord',
+	        value: function getRecord(table, field) {
+	            var _this11 = this;
+	
+	            var f = field.replace(' ', '').split(':');
+	            var e = {
+	                "form": {
+	                    "name": table
+	                },
+	                "field": {
+	                    "name": f[0],
+	                    "value": f[1]
+	                }
+	            };
+	            console.log(e);
+	            if (typeof field === "undefined") {
+	                alert("something is undefined");
+	            } else {
+	                this.client({
+	                    method: 'POST',
+	                    path: '/getRecord',
+	                    entity: JSON.stringify(e),
+	                    headers: {
+	                        'Content-Type': "application/json;charset=utf-8"
+	                    }
+	                }).done(function (response) {
+	                    console.log(Object.keys(_this11.state.form));
+	                    //console.log(response.entity[0]);
+	                    _this11.zip(Object.keys(_this11.state.form), response.entity[0]).map(function (field) {
+	                        _this11.setState((0, _immutabilityHelper2.default)(_this11.state, {
+	                            form: _defineProperty({}, field[0], { $set: field[1] })
+	                        }));
+	                    });
+	                    console.log(response);
+	                });
+	            }
 	            console.log(this.state);
+	        }
+	    }, {
+	        key: 'postForm',
+	        value: function postForm() {
+	            this.client({
+	                method: 'POST',
+	                path: '/' + (this.state.update ? 'update' : 'save') + this.state.selected.substr(0, 1).toUpperCase() + this.state.selected.substr(1).slice(0, -1),
+	                entity: JSON.stringify(this.state.form),
+	                headers: {
+	                    'Content-Type': "application/json;charset=utf-8"
+	                }
+	            });
 	        }
 	    }, {
 	        key: 'render',
@@ -492,8 +564,6 @@
 	
 	    return Main;
 	}(React.Component);
-	
-	//<h3>{this.state.headers.characters}</h3>
 	
 	ReactDOM.render(React.createElement(Main, null), document.getElementById('react'));
 

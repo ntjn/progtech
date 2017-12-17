@@ -52,7 +52,6 @@ class Table extends React.Component {
     }
 
     render() {
-        console.log(this);
         return (
             React.DOM.table({className: "MyClassName"},
               React.DOM.thead(null,
@@ -79,12 +78,6 @@ class Table extends React.Component {
 }
 
 class New extends React.Component {
-    /*var rest, mime, client;
-
-    rest = require('rest');
-    mime = require('rest/interceptor/mime');
-    client = rest.wrap(mime);*/
-
     constructor(props) {
         super(props);
         this.state = {
@@ -177,10 +170,10 @@ class Menu extends React.Component {
                     <option value="houses">Ház</option>
                     <option value="alliances">Szövetség</option>
                 </select>
-                <select value="Módosítás" onChange={this.handleModifyData}>
-                    <option name="modify">Módosítás</option>
-                    <option name="char">Karakter</option>
-                    <option name="alliance">Szövetség</option>
+                <select value="Módosítás" onChange={this.props.handleModifyData}>
+                    <option value="modify">Módosítás</option>
+                    <option value="characters">Karakter</option>
+                    <option value="alliances">Szövetség</option>
                 </select>
                 <button onClick={this.handleFilter}>Szűrés karakterre</button>
                 <button onClick={this.handleFilter}>Szűrés megszüntetése</button>
@@ -213,17 +206,46 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            form: { }
+            form: { },
+            selected: "",
+            update: false
         }
 
+        this.rest = require('rest');
+        this.mime = require('rest/interceptor/mime');
+        this.client = this.rest.wrap(this.mime);
+
         this.handleNewData = this.handleNewData.bind(this);
+        this.handleModifyData = this.handleModifyData.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.zip = this.zip.bind(this);
+    }
+
+    zip(p,q) {
+      if( p.length > 1 || q.length > 2) {
+        return this.zip(p.slice(1),q.slice(1)).concat([[p[0],q[0]]]);
+      } else {
+        return ([[p[0],q[0]]]);
+      }
     }
 
     handleNewData(event) {
-        console.log(this.state);
-        console.log(event.target.value);
         this.getHeaders(event.target.value);
+        this.setState(update(this.state, {
+          selected: { $set: event.target.value },
+          update: { $set: false }
+        }));
+    }
+
+    handleModifyData(event) {
+        var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
+        this.getHeaders(event.target.value);
+        this.getRecord(event.target.value, field);
+        this.setState(update(this.state, {
+          selected: { $set: event.target.value },
+          update: { $set: true }
+        }));
     }
 
     handleFormChange(event, field) {
@@ -232,21 +254,15 @@ class Main extends React.Component {
             [field]: { $set: event.target.value }
           }
         }));
-        this.getHeaders();
     }
 
     handleFormSubmit(event) {
-        alert(this.state.form.name + this.state.form.house);
+        event.preventDefault();
+        this.postForm();
     }
 
     getHeaders(table) {
-        var rest, mime, client;
-
-        rest = require('rest'),
-        mime = require('rest/interceptor/mime');
-
-        client = rest.wrap(mime);
-        client({
+        this.client({
             method: 'POST',
             path: '/getHeaders',
             entity: JSON.stringify({ 
@@ -256,7 +272,9 @@ class Main extends React.Component {
                 'Content-Type': "application/json;charset=utf-8"
             }
         }).done(response => {
-           this.setState({ form: { } });
+           this.setState(update(this.state, {
+             form: { $set: { } }
+           }));
            response.entity.map(
              row => {
                 this.setState(update(this.state, {
@@ -266,7 +284,59 @@ class Main extends React.Component {
                 }));
            })
         });
+    }
+
+    getRecord(table, field) {
+        var f = field.replace(' ','').split(':');
+        var e = { 
+            "form": {
+                "name": table
+            },
+            "field": {
+                "name": f[0],
+                "value": f[1]
+            }
+        }
+        console.log(e);
+        if (typeof field === "undefined") {
+            alert("something is undefined");
+        } else {
+            this.client({
+                method: 'POST',
+                path: '/getRecord',
+                entity: JSON.stringify(e),
+                headers: {
+                    'Content-Type': "application/json;charset=utf-8"
+                }
+            }).done(response => {
+               console.log(Object.keys(this.state.form));
+               //console.log(response.entity[0]);
+               this.zip(
+                 Object.keys(this.state.form),
+                 response.entity[0]
+               ).map(field => {
+                    this.setState(update(this.state, {
+                        form: {
+                            [field[0]]: { $set: field[1] }
+                        }
+                    }));
+               })
+               console.log(response);
+            });
+        }
         console.log(this.state);
+    }
+
+    postForm() {
+        this.client({
+            method: 'POST',
+            path: '/' + (this.state.update ? 'update' : 'save') +
+                  this.state.selected.substr(0,1).toUpperCase() + this.state.selected.substr(1).slice(0,-1),
+            entity: JSON.stringify(this.state.form),
+            headers: {
+                'Content-Type': "application/json;charset=utf-8"
+            }
+        });
     }
 
     render() {
@@ -288,8 +358,6 @@ class Main extends React.Component {
         );
     }
 }
-
-//<h3>{this.state.headers.characters}</h3>
 
 ReactDOM.render(
 	<Main />,

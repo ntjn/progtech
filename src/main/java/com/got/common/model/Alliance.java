@@ -3,6 +3,7 @@ package com.got.common.model;
 import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.*;
@@ -12,7 +13,9 @@ public class Alliance {
 	private Integer id;
 	private String houseP;
 	private String houseQ;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.sql.Timestamp begin;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.sql.Timestamp end;
 	
 	public Alliance() { }

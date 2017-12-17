@@ -4,6 +4,10 @@ import com.got.common.model.Character;
 import com.got.common.model.House;
 import com.got.common.model.Alliance;
 
+import com.got.common.model.Form;
+import com.got.common.model.Field;
+import com.got.common.model.FieldOfTable;
+
 import java.util.List;
 import java.util.Arrays;
 
@@ -44,6 +48,19 @@ public class JoinedDao extends HibernateDaoSupport {
 
     public List getHeaders(String table) {
     	String sqlQuery = "show columns from " + table;
+
+    	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
+        
+        SQLQuery query = current.createSQLQuery(sqlQuery);
+
+        return query.list();
+    }
+
+    public List getRecord(FieldOfTable field) {
+    	String sqlQuery = "select * from " + field.getForm().getName() +
+            " where " +
+            field.getField().getName() + " = " +
+            field.getField().getValue();
 
     	Session current = getHibernateTemplate().getSessionFactory().getCurrentSession();
         

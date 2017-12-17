@@ -5,162 +5,51 @@ const client = require('./client');
 
 import update from 'immutability-helper';
 
-class Table extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            thead: Array(16).fill(null),
-            tbody: Array(64).fill(Array(16).fill(null))
-        };
-    }
-
-	componentDidMount() {
-	    var rest, mime, client;
-
-        rest = require('rest'),
-        mime = require('rest/interceptor/mime');
-
-        client = rest.wrap(mime);
-        client({
-            method: 'GET', path: '/getTHead'
-        }).done(response => {
-            this.setState({ thead: response.entity });
-        });
-        client({
-            method: 'GET', path: '/getTBody'
-        }).done(response => {
-            this.setState({ tbody: response.entity });
-        });
-
-        client({
-            method: 'POST',
-            path: '/saveCharacter',
-            entity: JSON.stringify({
-                "name": "test", 
-                "armySize": 9, 
-                "state": true, 
-                "house": "TH"
-            }),
-            headers: {
-                'Content-Type': "application/json;charset=utf-8"
-            }
-        }).done(response => {
-            console.log("Response:")
-            console.log(response);
-        });
-
-    }
-
-    render() {
-        return (
-            React.DOM.table({className: "MyClassName"},
-              React.DOM.thead(null,
-                React.DOM.tr(null,
-                  this.state.thead.map(function(title) {
-                    return React.DOM.th({key: title}, title);
-                  })
-                )
-              ),
-              React.DOM.tbody(null,
-                this.state.tbody.map(function(row, i) {
-                  return (
-                    React.DOM.tr({key: i},
-                      row.map(function(col, j) {
-                        return React.DOM.td({key: j}, col);
-                      })
-                    )
-                  );
-                })
-              )
-            )
-        );
-	}
-}
-
-class New extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            new_: "Új",
-            modify: "Módosítás",
-            headers: {
-                characters: Array(32).fill(null),
-                houses: "A",
-                alliances: "A"
-            }
-        };
-        this.handleNew = this.handleNew.bind(this);
-        this.handleModify = this.handleModify.bind(this);
-    }
-
-    componentDidMount() {
-	    var rest, mime, client;
-
-        rest = require('rest'),
-        mime = require('rest/interceptor/mime');
-
-        client = rest.wrap(mime);
-        client({
-            method: 'GET', path: '/getCharColumns'
-        }).done(response => { this.setState({ 
-            headers: {
-                characters: response.entity.map( row => {return row[0]; })
-            }
-            });
-        });
-    }
-
-    handleNew(event) {
-        this.setState({ new_: event.target.value });
-    }
-
-    handleModify(event) {
-        this.setState({ modify: event.target.value });
-    }
-
-    render() {
-        return (
-            <div>
-                <select value="Új" onChange={ this.props.handleNewData }>
-                    <option name="new">Új</option>
-                    <option name="char">Karakter</option>
-                    <option name="house">Ház</option>
-                </select>
-                <select value="Módosítás" onChange={this.handleModifyData}>
-                    <option name="modify">Módosítás</option>
-                    <option name="char">Karakter</option>
-                    <option name="alliance">Szövetség</option>
-                </select>
-                <button onClick={this.handleAlliance}>Szövetség megadása</button>
-                <button onClick={this.handleAlliance}>Szűrés karakterre</button>
-                <button onClick={this.handleAlliance}>Szűrés megszüntetése</button>
-                <h3>{this.state.headers.characters}</h3>
-            </div>
-        );
-    }
-}
-
-class ChildOption extends React.Component {
-  propTypes: {
-    name: React.PropTypes.string,
-    value: React.PropTypes.string,
-  };
-
-  render() {
-    return (
-      <option value={this.props.value}>{this.props.name}</option>
-    )
+function zip(p,q) {
+  if( p.length > 1 || q.length > 2) {
+    return ([[p[0],q[0]]]).concat(zip(p.slice(1),q.slice(1)));
+  } else {
+    return ([[p[0],q[0]]]);
   }
 }
 
+class Table extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
+    render() {
+        return (
+            <table>
+                <thead>
+                    <tr>
+                    {this.props.data.thead.map((attr) => 
+                      {return <th key={attr}>{attr}</th>}
+                    )}
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.props.data.tbody.map((row,i) => {
+                        if(!this.props.filter || (this.props.filter && row[1] == this.props.character)) {
+                        return (
+                            <tr key={i}>
+                                {row.map((attr,j) => {
+                                    return <td key={j}>{attr}</td>
+                                })}
+                            </tr>
+                        )}
+                    })}
+                </tbody>
+            </table>
+        );
+    }
+}
 
 class Menu extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    // TODO boolean parameter on filter
     render() {
         return (
             <div>
@@ -175,8 +64,8 @@ class Menu extends React.Component {
                     <option value="characters">Karakter</option>
                     <option value="alliances">Szövetség</option>
                 </select>
-                <button onClick={this.handleFilter}>Szűrés karakterre</button>
-                <button onClick={this.handleFilter}>Szűrés megszüntetése</button>
+                <button onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
+                <button onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
             </div>
         )
     }
@@ -207,8 +96,14 @@ class Main extends React.Component {
         super(props);
         this.state = {
             form: { },
+            table: {
+                thead: Array(16).fill(null),
+                tbody: Array(64).fill(Array(16).fill(null))
+            },
             selected: "",
-            update: false
+            update: false,
+            filter: false,
+            character: ""
         }
 
         this.rest = require('rest');
@@ -219,6 +114,7 @@ class Main extends React.Component {
         this.handleModifyData = this.handleModifyData.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
         this.zip = this.zip.bind(this);
     }
 
@@ -259,6 +155,35 @@ class Main extends React.Component {
     handleFormSubmit(event) {
         event.preventDefault();
         this.postForm();
+    }
+
+    handleFilter(event, whether) {
+        var field;
+        if( whether ) {
+            field = prompt("Kérem adja meg a karakter nevét");
+        }
+        this.setState(update(this.state, {
+          filter: { $set: whether },
+          character: { $set: (field === "undefined" ? "" : field) }
+        }));
+    }
+
+    getTable() {
+        this.client({
+            method: 'GET', path: '/getTHead'
+        }).done(response => {
+            this.setState(update(this.state, {
+                table: { thead: { $set: response.entity } }
+            }));
+        });
+        this.client({
+            method: 'GET', path: '/getTBody'
+        }).done(response => {
+            this.setState(update(this.state, {
+                table: { tbody: { $set: response.entity } }
+            }));
+        });
+        console.log(this.state);
     }
 
     getHeaders(table) {
@@ -310,7 +235,6 @@ class Main extends React.Component {
                 }
             }).done(response => {
                console.log(Object.keys(this.state.form));
-               //console.log(response.entity[0]);
                this.zip(
                  Object.keys(this.state.form),
                  response.entity[0]
@@ -339,6 +263,10 @@ class Main extends React.Component {
         });
     }
 
+    componentDidMount() {
+        this.getTable();
+    }
+
     render() {
         return (
             <div>
@@ -348,7 +276,12 @@ class Main extends React.Component {
                     handleModifyData={this.handleModifyData}
                     handleFilter={this.handleFilter}
                 />
-                <Table />
+                <Table
+                    getTableData={this.getTable}
+                    data={this.state.table}
+                    filter={this.state.filter}
+                    character={this.state.character}
+                />
                 <PostDataForm
                     data={this.state.form}
                     onChange={this.handleFormChange}
@@ -363,12 +296,6 @@ ReactDOM.render(
 	<Main />,
 	document.getElementById('react')
 )
-
-
-
-
-
-
 
 
 

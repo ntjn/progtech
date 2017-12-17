@@ -66,225 +66,74 @@
 	var ReactDOM = __webpack_require__(39);
 	var client = __webpack_require__(186);
 	
+	function zip(p, q) {
+	    if (p.length > 1 || q.length > 2) {
+	        return [[p[0], q[0]]].concat(zip(p.slice(1), q.slice(1)));
+	    } else {
+	        return [[p[0], q[0]]];
+	    }
+	}
+	
 	var Table = function (_React$Component) {
 	    _inherits(Table, _React$Component);
 	
 	    function Table(props) {
 	        _classCallCheck(this, Table);
 	
-	        var _this = _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
-	
-	        _this.state = {
-	            thead: Array(16).fill(null),
-	            tbody: Array(64).fill(Array(16).fill(null))
-	        };
-	        return _this;
+	        return _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
 	    }
 	
 	    _createClass(Table, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var _this2 = this;
-	
-	            var rest, mime, client;
-	
-	            rest = __webpack_require__(187), mime = __webpack_require__(215);
-	
-	            client = rest.wrap(mime);
-	            client({
-	                method: 'GET', path: '/getTHead'
-	            }).done(function (response) {
-	                _this2.setState({ thead: response.entity });
-	            });
-	            client({
-	                method: 'GET', path: '/getTBody'
-	            }).done(function (response) {
-	                _this2.setState({ tbody: response.entity });
-	            });
-	
-	            client({
-	                method: 'POST',
-	                path: '/saveCharacter',
-	                entity: JSON.stringify({
-	                    "name": "test",
-	                    "armySize": 9,
-	                    "state": true,
-	                    "house": "TH"
-	                }),
-	                headers: {
-	                    'Content-Type': "application/json;charset=utf-8"
-	                }
-	            }).done(function (response) {
-	                console.log("Response:");
-	                console.log(response);
-	            });
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
-	            return React.DOM.table({ className: "MyClassName" }, React.DOM.thead(null, React.DOM.tr(null, this.state.thead.map(function (title) {
-	                return React.DOM.th({ key: title }, title);
-	            }))), React.DOM.tbody(null, this.state.tbody.map(function (row, i) {
-	                return React.DOM.tr({ key: i }, row.map(function (col, j) {
-	                    return React.DOM.td({ key: j }, col);
-	                }));
-	            })));
+	            var _this2 = this;
+	
+	            return React.createElement(
+	                'table',
+	                null,
+	                React.createElement(
+	                    'thead',
+	                    null,
+	                    React.createElement(
+	                        'tr',
+	                        null,
+	                        this.props.data.thead.map(function (attr) {
+	                            return React.createElement(
+	                                'th',
+	                                { key: attr },
+	                                attr
+	                            );
+	                        })
+	                    )
+	                ),
+	                React.createElement(
+	                    'tbody',
+	                    null,
+	                    this.props.data.tbody.map(function (row, i) {
+	                        if (!_this2.props.filter || _this2.props.filter && row[1] == _this2.props.character) {
+	                            return React.createElement(
+	                                'tr',
+	                                { key: i },
+	                                row.map(function (attr, j) {
+	                                    return React.createElement(
+	                                        'td',
+	                                        { key: j },
+	                                        attr
+	                                    );
+	                                })
+	                            );
+	                        }
+	                    })
+	                )
+	            );
 	        }
 	    }]);
 	
 	    return Table;
 	}(React.Component);
 	
-	var New = function (_React$Component2) {
-	    _inherits(New, _React$Component2);
-	
-	    function New(props) {
-	        _classCallCheck(this, New);
-	
-	        var _this3 = _possibleConstructorReturn(this, (New.__proto__ || Object.getPrototypeOf(New)).call(this, props));
-	
-	        _this3.state = {
-	            new_: "Új",
-	            modify: "Módosítás",
-	            headers: {
-	                characters: Array(32).fill(null),
-	                houses: "A",
-	                alliances: "A"
-	            }
-	        };
-	        _this3.handleNew = _this3.handleNew.bind(_this3);
-	        _this3.handleModify = _this3.handleModify.bind(_this3);
-	        return _this3;
-	    }
-	
-	    _createClass(New, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var _this4 = this;
-	
-	            var rest, mime, client;
-	
-	            rest = __webpack_require__(187), mime = __webpack_require__(215);
-	
-	            client = rest.wrap(mime);
-	            client({
-	                method: 'GET', path: '/getCharColumns'
-	            }).done(function (response) {
-	                _this4.setState({
-	                    headers: {
-	                        characters: response.entity.map(function (row) {
-	                            return row[0];
-	                        })
-	                    }
-	                });
-	            });
-	        }
-	    }, {
-	        key: 'handleNew',
-	        value: function handleNew(event) {
-	            this.setState({ new_: event.target.value });
-	        }
-	    }, {
-	        key: 'handleModify',
-	        value: function handleModify(event) {
-	            this.setState({ modify: event.target.value });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(
-	                    'select',
-	                    { value: '\xDAj', onChange: this.props.handleNewData },
-	                    React.createElement(
-	                        'option',
-	                        { name: 'new' },
-	                        '\xDAj'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { name: 'char' },
-	                        'Karakter'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { name: 'house' },
-	                        'H\xE1z'
-	                    )
-	                ),
-	                React.createElement(
-	                    'select',
-	                    { value: 'M\xF3dos\xEDt\xE1s', onChange: this.handleModifyData },
-	                    React.createElement(
-	                        'option',
-	                        { name: 'modify' },
-	                        'M\xF3dos\xEDt\xE1s'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { name: 'char' },
-	                        'Karakter'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { name: 'alliance' },
-	                        'Sz\xF6vets\xE9g'
-	                    )
-	                ),
-	                React.createElement(
-	                    'button',
-	                    { onClick: this.handleAlliance },
-	                    'Sz\xF6vets\xE9g megad\xE1sa'
-	                ),
-	                React.createElement(
-	                    'button',
-	                    { onClick: this.handleAlliance },
-	                    'Sz\u0171r\xE9s karakterre'
-	                ),
-	                React.createElement(
-	                    'button',
-	                    { onClick: this.handleAlliance },
-	                    'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
-	                ),
-	                React.createElement(
-	                    'h3',
-	                    null,
-	                    this.state.headers.characters
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return New;
-	}(React.Component);
-	
-	var ChildOption = function (_React$Component3) {
-	    _inherits(ChildOption, _React$Component3);
-	
-	    function ChildOption() {
-	        _classCallCheck(this, ChildOption);
-	
-	        return _possibleConstructorReturn(this, (ChildOption.__proto__ || Object.getPrototypeOf(ChildOption)).apply(this, arguments));
-	    }
-	
-	    _createClass(ChildOption, [{
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'option',
-	                { value: this.props.value },
-	                this.props.name
-	            );
-	        }
-	    }]);
-	
-	    return ChildOption;
-	}(React.Component);
-	
-	var Menu = function (_React$Component4) {
-	    _inherits(Menu, _React$Component4);
+	var Menu = function (_React$Component2) {
+	    _inherits(Menu, _React$Component2);
 	
 	    function Menu(props) {
 	        _classCallCheck(this, Menu);
@@ -292,12 +141,11 @@
 	        return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 	    }
 	
-	    // TODO boolean parameter on filter
-	
-	
 	    _createClass(Menu, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this4 = this;
+	
 	            return React.createElement(
 	                'div',
 	                null,
@@ -346,12 +194,16 @@
 	                ),
 	                React.createElement(
 	                    'button',
-	                    { onClick: this.handleFilter },
+	                    { onClick: function onClick(e) {
+	                            return _this4.props.handleFilter(e, true);
+	                        } },
 	                    'Sz\u0171r\xE9s karakterre'
 	                ),
 	                React.createElement(
 	                    'button',
-	                    { onClick: this.handleFilter },
+	                    { onClick: function onClick(e) {
+	                            return _this4.props.handleFilter(e, false);
+	                        } },
 	                    'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
 	                )
 	            );
@@ -361,8 +213,8 @@
 	    return Menu;
 	}(React.Component);
 	
-	var PostDataForm = function (_React$Component5) {
-	    _inherits(PostDataForm, _React$Component5);
+	var PostDataForm = function (_React$Component3) {
+	    _inherits(PostDataForm, _React$Component3);
 	
 	    function PostDataForm(props) {
 	        _classCallCheck(this, PostDataForm);
@@ -373,7 +225,7 @@
 	    _createClass(PostDataForm, [{
 	        key: 'render',
 	        value: function render() {
-	            var _this8 = this;
+	            var _this6 = this;
 	
 	            return React.createElement(
 	                'form',
@@ -383,8 +235,8 @@
 	                        'label',
 	                        { key: field },
 	                        field,
-	                        React.createElement('input', { type: 'text', value: _this8.props.data[field], onChange: function onChange(e) {
-	                                return _this8.props.onChange(e, field);
+	                        React.createElement('input', { type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
+	                                return _this6.props.onChange(e, field);
 	                            } })
 	                    );
 	                }),
@@ -396,30 +248,37 @@
 	    return PostDataForm;
 	}(React.Component);
 	
-	var Main = function (_React$Component6) {
-	    _inherits(Main, _React$Component6);
+	var Main = function (_React$Component4) {
+	    _inherits(Main, _React$Component4);
 	
 	    function Main(props) {
 	        _classCallCheck(this, Main);
 	
-	        var _this9 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
+	        var _this7 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 	
-	        _this9.state = {
+	        _this7.state = {
 	            form: {},
+	            table: {
+	                thead: Array(16).fill(null),
+	                tbody: Array(64).fill(Array(16).fill(null))
+	            },
 	            selected: "",
-	            update: false
+	            update: false,
+	            filter: false,
+	            character: ""
 	        };
 	
-	        _this9.rest = __webpack_require__(187);
-	        _this9.mime = __webpack_require__(215);
-	        _this9.client = _this9.rest.wrap(_this9.mime);
+	        _this7.rest = __webpack_require__(187);
+	        _this7.mime = __webpack_require__(215);
+	        _this7.client = _this7.rest.wrap(_this7.mime);
 	
-	        _this9.handleNewData = _this9.handleNewData.bind(_this9);
-	        _this9.handleModifyData = _this9.handleModifyData.bind(_this9);
-	        _this9.handleFormChange = _this9.handleFormChange.bind(_this9);
-	        _this9.handleFormSubmit = _this9.handleFormSubmit.bind(_this9);
-	        _this9.zip = _this9.zip.bind(_this9);
-	        return _this9;
+	        _this7.handleNewData = _this7.handleNewData.bind(_this7);
+	        _this7.handleModifyData = _this7.handleModifyData.bind(_this7);
+	        _this7.handleFormChange = _this7.handleFormChange.bind(_this7);
+	        _this7.handleFormSubmit = _this7.handleFormSubmit.bind(_this7);
+	        _this7.handleFilter = _this7.handleFilter.bind(_this7);
+	        _this7.zip = _this7.zip.bind(_this7);
+	        return _this7;
 	    }
 	
 	    _createClass(Main, [{
@@ -465,9 +324,42 @@
 	            this.postForm();
 	        }
 	    }, {
+	        key: 'handleFilter',
+	        value: function handleFilter(event, whether) {
+	            var field;
+	            if (whether) {
+	                field = prompt("Kérem adja meg a karakter nevét");
+	            }
+	            this.setState((0, _immutabilityHelper2.default)(this.state, {
+	                filter: { $set: whether },
+	                character: { $set: field === "undefined" ? "" : field }
+	            }));
+	        }
+	    }, {
+	        key: 'getTable',
+	        value: function getTable() {
+	            var _this8 = this;
+	
+	            this.client({
+	                method: 'GET', path: '/getTHead'
+	            }).done(function (response) {
+	                _this8.setState((0, _immutabilityHelper2.default)(_this8.state, {
+	                    table: { thead: { $set: response.entity } }
+	                }));
+	            });
+	            this.client({
+	                method: 'GET', path: '/getTBody'
+	            }).done(function (response) {
+	                _this8.setState((0, _immutabilityHelper2.default)(_this8.state, {
+	                    table: { tbody: { $set: response.entity } }
+	                }));
+	            });
+	            console.log(this.state);
+	        }
+	    }, {
 	        key: 'getHeaders',
 	        value: function getHeaders(table) {
-	            var _this10 = this;
+	            var _this9 = this;
 	
 	            this.client({
 	                method: 'POST',
@@ -479,11 +371,11 @@
 	                    'Content-Type': "application/json;charset=utf-8"
 	                }
 	            }).done(function (response) {
-	                _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
+	                _this9.setState((0, _immutabilityHelper2.default)(_this9.state, {
 	                    form: { $set: {} }
 	                }));
 	                response.entity.map(function (row) {
-	                    _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
+	                    _this9.setState((0, _immutabilityHelper2.default)(_this9.state, {
 	                        form: _defineProperty({}, row[0], { $set: "" })
 	                    }));
 	                });
@@ -492,7 +384,7 @@
 	    }, {
 	        key: 'getRecord',
 	        value: function getRecord(table, field) {
-	            var _this11 = this;
+	            var _this10 = this;
 	
 	            var f = field.replace(' ', '').split(':');
 	            var e = {
@@ -516,10 +408,9 @@
 	                        'Content-Type': "application/json;charset=utf-8"
 	                    }
 	                }).done(function (response) {
-	                    console.log(Object.keys(_this11.state.form));
-	                    //console.log(response.entity[0]);
-	                    _this11.zip(Object.keys(_this11.state.form), response.entity[0]).map(function (field) {
-	                        _this11.setState((0, _immutabilityHelper2.default)(_this11.state, {
+	                    console.log(Object.keys(_this10.state.form));
+	                    _this10.zip(Object.keys(_this10.state.form), response.entity[0]).map(function (field) {
+	                        _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
 	                            form: _defineProperty({}, field[0], { $set: field[1] })
 	                        }));
 	                    });
@@ -541,6 +432,11 @@
 	            });
 	        }
 	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.getTable();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return React.createElement(
@@ -552,7 +448,12 @@
 	                    handleModifyData: this.handleModifyData,
 	                    handleFilter: this.handleFilter
 	                }),
-	                React.createElement(Table, null),
+	                React.createElement(Table, {
+	                    getTableData: this.getTable,
+	                    data: this.state.table,
+	                    filter: this.state.filter,
+	                    character: this.state.character
+	                }),
 	                React.createElement(PostDataForm, {
 	                    data: this.state.form,
 	                    onChange: this.handleFormChange,

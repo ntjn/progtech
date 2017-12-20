@@ -4,7 +4,20 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 
 import update from 'immutability-helper';
-//import 'bootstrap';
+
+var locale = {
+    id: 'Id',
+    name: 'Név',
+    armySize: 'Sereg méret',
+    state: 'Állapot',
+    house: 'Ház',
+    houseP: 'Ház 0',
+    houseQ: 'Ház 1',
+    begin: 'Kezdet',
+    end: 'Vég',
+    crest: 'Címer',
+    motto: 'Mottó'
+}
 
 function zip(p,q) {
   if( p.length > 1 || q.length > 2) {
@@ -25,7 +38,7 @@ class Table extends React.Component {
                 <thead>
                     <tr>
                     {this.props.data.thead.map((attr) => 
-                      {return <th key={attr}>{attr}</th>}
+                      {return <th key={attr}>{locale[attr]}</th>}
                     )}
                     </tr>
                 </thead>
@@ -53,21 +66,29 @@ class Menu extends React.Component {
 
     render() {
         return (
-            <div>
-                <select className="btn btn-primary dropdown-toggle" value="Új" onChange={this.props.handleNewData}>
-                    <option className="dropdown-item" name="new">Új</option>
-                    <option className="dropdown-item" value="characters">Karakter</option>
-                    <option className="dropdown-item" value="houses">Ház</option>
-                    <option className="dropdown-item" value="alliances">Szövetség</option>
-                </select>
-                <select className="btn btn-primary dropdown-toggle" value="Módosítás" onChange={this.props.handleModifyData}>
-                    <option className="dropdown-item" value="modify">Módosítás</option>
-                    <option className="dropdown-item" value="characters">Karakter</option>
-                    <option className="dropdown-item" value="alliances">Szövetség</option>
-                </select>
-                <button className="btn btn-primary" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
-                <button className="btn btn-primary" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
-            </div>
+            <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <select className="nav-link dropdown-toggle" value="Új" onChange={this.props.handleNewData}>
+                        <option className="dropdown-header" name="new">Új</option>
+                        <option className="dropdown-item" value="characters">Karakter</option>
+                        <option className="dropdown-item" value="houses">Ház</option>
+                        <option className="dropdown-item" value="alliances">Szövetség</option>
+                    </select>
+                </li>
+                <li className="nav-item">
+                    <select className="nav-link dropdown-toggle" value="Módosítás" onChange={this.props.handleModifyData}>
+                        <option className="dropdown-header" value="modify">Módosítás</option>
+                        <option className="dropdown-item" value="characters">Karakter</option>
+                        <option className="dropdown-item" value="alliances">Szövetség</option>
+                    </select>
+                </li>
+                <li className="nav-item">
+                    <button className="nav-link" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
+                </li>
+                <li className="nav-item">
+                    <button className="nav-link" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
+                </li>
+            </ul>
         )
     }
 }
@@ -79,15 +100,37 @@ class PostDataForm extends React.Component {
 
     render() {
         return (
-                <form  onSubmit={this.props.handleSubmit}>
-                    {Object.keys(this.props.data).map((field) => 
-                        <label key={field}>
-                            {field}
-                            <input className="form-group row" type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } />
-                        </label>
-                    )}
-                    <input className="form-group row" type="submit" value="Submit" />
-                </form>
+            <form  onSubmit={this.props.handleSubmit}>
+                <table className="table table-striped">
+                    <thead>
+                        <tr>
+                        {Object.keys(this.props.data).map((field,i) => 
+                            <th key={i}>{locale[field]}</th>
+                        )}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        {Object.keys(this.props.data).map((field,i) => 
+                            <td key={i}><input type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } /></td>
+                        )}
+                        {(() => {
+                            if(typeof(this.props.data['id']) !== 'undefined') {
+                                return <td><input className="btn btn-secondary btn-sm" type="submit" value={
+                                    (() => {
+                                        if(this.props.update) {
+                                            return 'Módosítás';
+                                        } else {
+                                            return 'Felvétel';
+                                        }
+                                    })()
+                                }/></td>
+                            }
+                        })()}
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
         );
     }
 }
@@ -285,6 +328,7 @@ class Main extends React.Component {
                 />
                 <PostDataForm
                     data={this.state.form}
+                    update={this.state.update}
                     onChange={this.handleFormChange}
                     handleSubmit={this.handleFormSubmit}
                 />
@@ -297,6 +341,3 @@ ReactDOM.render(
 	<Main />,
 	document.getElementById('react')
 )
-
-
-

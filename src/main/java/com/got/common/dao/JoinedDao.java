@@ -24,7 +24,7 @@ public class JoinedDao extends HibernateDaoSupport {
     public List getTHead() {
         //List<String> supplierNames =
         return Arrays.asList(
-            "Id", "Name", "Army size", "State", "House", "crest", "motto"
+            "id", "name", "armySize", "state", "house", "crest", "motto"
         );
     }
     

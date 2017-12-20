@@ -68,6 +68,20 @@
 	
 	//import 'bootstrap';
 	
+	var locale = {
+	    id: 'Id',
+	    name: 'Név',
+	    armySize: 'Sereg méret',
+	    state: 'Állapot',
+	    house: 'Ház',
+	    houseP: 'Ház 0',
+	    houseQ: 'Ház 1',
+	    begin: 'Kezdet',
+	    end: 'Vég',
+	    crest: 'Címer',
+	    motto: 'Mottó'
+	};
+	
 	function zip(p, q) {
 	    if (p.length > 1 || q.length > 2) {
 	        return [[p[0], q[0]]].concat(zip(p.slice(1), q.slice(1)));
@@ -103,7 +117,7 @@
 	                            return React.createElement(
 	                                'th',
 	                                { key: attr },
-	                                attr
+	                                locale[attr]
 	                            );
 	                        })
 	                    )
@@ -149,64 +163,80 @@
 	            var _this4 = this;
 	
 	            return React.createElement(
-	                'div',
-	                null,
+	                'ul',
+	                { className: 'nav nav-tabs' },
 	                React.createElement(
-	                    'select',
-	                    { className: 'btn btn-primary dropdown-toggle', value: '\xDAj', onChange: this.props.handleNewData },
+	                    'li',
+	                    { className: 'nav-item' },
 	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', name: 'new' },
-	                        '\xDAj'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'characters' },
-	                        'Karakter'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'houses' },
-	                        'H\xE1z'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'alliances' },
-	                        'Sz\xF6vets\xE9g'
+	                        'select',
+	                        { className: 'nav-link dropdown-toggle', value: '\xDAj', onChange: this.props.handleNewData },
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-header', name: 'new' },
+	                            '\xDAj'
+	                        ),
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-item', value: 'characters' },
+	                            'Karakter'
+	                        ),
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-item', value: 'houses' },
+	                            'H\xE1z'
+	                        ),
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-item', value: 'alliances' },
+	                            'Sz\xF6vets\xE9g'
+	                        )
 	                    )
 	                ),
 	                React.createElement(
-	                    'select',
-	                    { className: 'btn btn-primary dropdown-toggle', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
+	                    'li',
+	                    { className: 'nav-item' },
 	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'modify' },
-	                        'M\xF3dos\xEDt\xE1s'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'characters' },
-	                        'Karakter'
-	                    ),
-	                    React.createElement(
-	                        'option',
-	                        { className: 'dropdown-item', value: 'alliances' },
-	                        'Sz\xF6vets\xE9g'
+	                        'select',
+	                        { className: 'nav-link dropdown-toggle', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-header', value: 'modify' },
+	                            'M\xF3dos\xEDt\xE1s'
+	                        ),
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-item', value: 'characters' },
+	                            'Karakter'
+	                        ),
+	                        React.createElement(
+	                            'option',
+	                            { className: 'dropdown-item', value: 'alliances' },
+	                            'Sz\xF6vets\xE9g'
+	                        )
 	                    )
 	                ),
 	                React.createElement(
-	                    'button',
-	                    { className: 'btn btn-primary', onClick: function onClick(e) {
-	                            return _this4.props.handleFilter(e, true);
-	                        } },
-	                    'Sz\u0171r\xE9s karakterre'
+	                    'li',
+	                    { className: 'nav-item' },
+	                    React.createElement(
+	                        'button',
+	                        { className: 'nav-link', onClick: function onClick(e) {
+	                                return _this4.props.handleFilter(e, true);
+	                            } },
+	                        'Sz\u0171r\xE9s karakterre'
+	                    )
 	                ),
 	                React.createElement(
-	                    'button',
-	                    { className: 'btn btn-primary', onClick: function onClick(e) {
-	                            return _this4.props.handleFilter(e, false);
-	                        } },
-	                    'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
+	                    'li',
+	                    { className: 'nav-item' },
+	                    React.createElement(
+	                        'button',
+	                        { className: 'nav-link', onClick: function onClick(e) {
+	                                return _this4.props.handleFilter(e, false);
+	                            } },
+	                        'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
+	                    )
 	                )
 	            );
 	        }
@@ -232,17 +262,57 @@
 	            return React.createElement(
 	                'form',
 	                { onSubmit: this.props.handleSubmit },
-	                Object.keys(this.props.data).map(function (field) {
-	                    return React.createElement(
-	                        'label',
-	                        { key: field },
-	                        field,
-	                        React.createElement('input', { className: 'form-group row', type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
-	                                return _this6.props.onChange(e, field);
-	                            } })
-	                    );
-	                }),
-	                React.createElement('input', { className: 'form-group row', type: 'submit', value: 'Submit' })
+	                React.createElement(
+	                    'table',
+	                    { className: 'table table-striped' },
+	                    React.createElement(
+	                        'thead',
+	                        null,
+	                        React.createElement(
+	                            'tr',
+	                            null,
+	                            Object.keys(this.props.data).map(function (field, i) {
+	                                return React.createElement(
+	                                    'th',
+	                                    { key: i },
+	                                    locale[field]
+	                                );
+	                            })
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'tbody',
+	                        null,
+	                        React.createElement(
+	                            'tr',
+	                            null,
+	                            Object.keys(this.props.data).map(function (field, i) {
+	                                return React.createElement(
+	                                    'td',
+	                                    { key: i },
+	                                    React.createElement('input', { type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
+	                                            return _this6.props.onChange(e, field);
+	                                        } })
+	                                );
+	                            }),
+	                            function () {
+	                                if (typeof _this6.props.data['id'] !== 'undefined') {
+	                                    return React.createElement(
+	                                        'td',
+	                                        null,
+	                                        React.createElement('input', { className: 'btn btn-secondary btn-sm', type: 'submit', value: function () {
+	                                                if (_this6.props.update) {
+	                                                    return 'Módosítás';
+	                                                } else {
+	                                                    return 'Felvétel';
+	                                                }
+	                                            }() })
+	                                    );
+	                                }
+	                            }()
+	                        )
+	                    )
+	                )
 	            );
 	        }
 	    }]);
@@ -458,6 +528,7 @@
 	                }),
 	                React.createElement(PostDataForm, {
 	                    data: this.state.form,
+	                    update: this.state.update,
 	                    onChange: this.handleFormChange,
 	                    handleSubmit: this.handleFormSubmit
 	                })

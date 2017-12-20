@@ -66,8 +66,6 @@
 	var ReactDOM = __webpack_require__(39);
 	var client = __webpack_require__(186);
 	
-	//import 'bootstrap';
-	
 	var locale = {
 	    id: 'Id',
 	    name: 'Név',

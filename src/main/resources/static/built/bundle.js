@@ -66,6 +66,8 @@
 	var ReactDOM = __webpack_require__(39);
 	var client = __webpack_require__(186);
 	
+	//import 'bootstrap';
+	
 	function zip(p, q) {
 	    if (p.length > 1 || q.length > 2) {
 	        return [[p[0], q[0]]].concat(zip(p.slice(1), q.slice(1)));
@@ -90,7 +92,7 @@
 	
 	            return React.createElement(
 	                'table',
-	                null,
+	                { className: 'table table-striped' },
 	                React.createElement(
 	                    'thead',
 	                    null,
@@ -151,57 +153,57 @@
 	                null,
 	                React.createElement(
 	                    'select',
-	                    { value: '\xDAj', onChange: this.props.handleNewData },
+	                    { className: 'btn btn-primary dropdown-toggle', value: '\xDAj', onChange: this.props.handleNewData },
 	                    React.createElement(
 	                        'option',
-	                        { name: 'new' },
+	                        { className: 'dropdown-item', name: 'new' },
 	                        '\xDAj'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { value: 'characters' },
+	                        { className: 'dropdown-item', value: 'characters' },
 	                        'Karakter'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { value: 'houses' },
+	                        { className: 'dropdown-item', value: 'houses' },
 	                        'H\xE1z'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { value: 'alliances' },
+	                        { className: 'dropdown-item', value: 'alliances' },
 	                        'Sz\xF6vets\xE9g'
 	                    )
 	                ),
 	                React.createElement(
 	                    'select',
-	                    { value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
+	                    { className: 'btn btn-primary dropdown-toggle', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
 	                    React.createElement(
 	                        'option',
-	                        { value: 'modify' },
+	                        { className: 'dropdown-item', value: 'modify' },
 	                        'M\xF3dos\xEDt\xE1s'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { value: 'characters' },
+	                        { className: 'dropdown-item', value: 'characters' },
 	                        'Karakter'
 	                    ),
 	                    React.createElement(
 	                        'option',
-	                        { value: 'alliances' },
+	                        { className: 'dropdown-item', value: 'alliances' },
 	                        'Sz\xF6vets\xE9g'
 	                    )
 	                ),
 	                React.createElement(
 	                    'button',
-	                    { onClick: function onClick(e) {
+	                    { className: 'btn btn-primary', onClick: function onClick(e) {
 	                            return _this4.props.handleFilter(e, true);
 	                        } },
 	                    'Sz\u0171r\xE9s karakterre'
 	                ),
 	                React.createElement(
 	                    'button',
-	                    { onClick: function onClick(e) {
+	                    { className: 'btn btn-primary', onClick: function onClick(e) {
 	                            return _this4.props.handleFilter(e, false);
 	                        } },
 	                    'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
@@ -235,12 +237,12 @@
 	                        'label',
 	                        { key: field },
 	                        field,
-	                        React.createElement('input', { type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
+	                        React.createElement('input', { className: 'form-group row', type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
 	                                return _this6.props.onChange(e, field);
 	                            } })
 	                    );
 	                }),
-	                React.createElement('input', { type: 'submit', value: 'Submit' })
+	                React.createElement('input', { className: 'form-group row', type: 'submit', value: 'Submit' })
 	            );
 	        }
 	    }]);

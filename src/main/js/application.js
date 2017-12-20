@@ -4,6 +4,7 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 
 import update from 'immutability-helper';
+//import 'bootstrap';
 
 function zip(p,q) {
   if( p.length > 1 || q.length > 2) {
@@ -20,7 +21,7 @@ class Table extends React.Component {
 
     render() {
         return (
-            <table>
+            <table className="table table-striped">
                 <thead>
                     <tr>
                     {this.props.data.thead.map((attr) => 
@@ -53,19 +54,19 @@ class Menu extends React.Component {
     render() {
         return (
             <div>
-                <select value="Új" onChange={this.props.handleNewData}>
-                    <option name="new">Új</option>
-                    <option value="characters">Karakter</option>
-                    <option value="houses">Ház</option>
-                    <option value="alliances">Szövetség</option>
+                <select className="btn btn-primary dropdown-toggle" value="Új" onChange={this.props.handleNewData}>
+                    <option className="dropdown-item" name="new">Új</option>
+                    <option className="dropdown-item" value="characters">Karakter</option>
+                    <option className="dropdown-item" value="houses">Ház</option>
+                    <option className="dropdown-item" value="alliances">Szövetség</option>
                 </select>
-                <select value="Módosítás" onChange={this.props.handleModifyData}>
-                    <option value="modify">Módosítás</option>
-                    <option value="characters">Karakter</option>
-                    <option value="alliances">Szövetség</option>
+                <select className="btn btn-primary dropdown-toggle" value="Módosítás" onChange={this.props.handleModifyData}>
+                    <option className="dropdown-item" value="modify">Módosítás</option>
+                    <option className="dropdown-item" value="characters">Karakter</option>
+                    <option className="dropdown-item" value="alliances">Szövetség</option>
                 </select>
-                <button onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
-                <button onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
+                <button className="btn btn-primary" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
+                <button className="btn btn-primary" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
             </div>
         )
     }
@@ -78,15 +79,15 @@ class PostDataForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.props.handleSubmit}>
-                {Object.keys(this.props.data).map((field) => 
-                    <label key={field}>
-                        {field}
-                        <input type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } />
-                    </label>
-                )}
-                <input type="submit" value="Submit" />
-            </form>
+                <form  onSubmit={this.props.handleSubmit}>
+                    {Object.keys(this.props.data).map((field) => 
+                        <label key={field}>
+                            {field}
+                            <input className="form-group row" type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } />
+                        </label>
+                    )}
+                    <input className="form-group row" type="submit" value="Submit" />
+                </form>
         );
     }
 }

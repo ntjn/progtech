@@ -373,7 +373,7 @@
 	        key: 'handleModifyData',
 	        value: function handleModifyData(event) {
 	            var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-	            this.getHeaders(event.target.value);
+	            //this.getHeaders(event.target.value);
 	            this.getRecord(event.target.value, field);
 	            this.setState((0, _immutabilityHelper2.default)(this.state, {
 	                selected: { $set: event.target.value },

@@ -180,7 +180,7 @@ class Main extends React.Component {
 
     handleModifyData(event) {
         var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-        this.getHeaders(event.target.value);
+        //this.getHeaders(event.target.value);
         this.getRecord(event.target.value, field);
         this.setState(update(this.state, {
           selected: { $set: event.target.value },

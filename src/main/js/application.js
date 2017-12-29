@@ -34,27 +34,29 @@ class Table extends React.Component {
 
     render() {
         return (
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                    {this.props.data.thead.map((attr) => 
-                      {return <th key={attr}>{locale[attr]}</th>}
-                    )}
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.data.tbody.map((row,i) => {
-                        if(!this.props.filter || (this.props.filter && row[1] == this.props.character)) {
-                        return (
-                            <tr key={i}>
-                                {row.map((attr,j) => {
-                                    return <td key={j}>{attr}</td>
-                                })}
-                            </tr>
-                        )}
-                    })}
-                </tbody>
-            </table>
+			<div id="table_dynamic">
+				<table className="table table-striped">
+					<thead>
+						<tr>
+						{this.props.data.thead.map((attr) => 
+						  {return <th key={attr}>{locale[attr]}</th>}
+						)}
+						</tr>
+					</thead>
+					<tbody>
+						{this.props.data.tbody.map((row,i) => {
+							if(!this.props.filter || (this.props.filter && row[1] == this.props.character)) {
+							return (
+								<tr key={i}>
+									{row.map((attr,j) => {
+										return <td key={j}>{attr}</td>
+									})}
+								</tr>
+							)}
+						})}
+					</tbody>
+				</table>
+			</div>	
         );
     }
 }
@@ -62,7 +64,48 @@ class Table extends React.Component {
 class Menu extends React.Component {
     constructor(props) {
         super(props);
+		this.state = {
+			form: { }
+		};
+
+        this.rest = require('rest');
+        this.mime = require('rest/interceptor/mime');
+        this.client = this.rest.wrap(this.mime);
     }
+
+	getHeaders(table) {
+        this.client({
+            method: 'POST',
+            path: '/getHeaders',
+            entity: JSON.stringify({ 
+                "name": table
+            }),
+            headers: {
+                'Content-Type': "application/json;charset=utf-8"
+            }
+        }).done(response => {
+           this.setState(update(this.state, {
+             form: { [table]: { $set: { } } }
+           }));
+           response.entity.map(
+             row => {
+                this.setState(update(this.state, {
+                    form: {
+                        [table]: {
+							[row[0]]: { $set: "" }
+						}
+                    }
+                }));
+           })
+        });
+    }
+
+	componentWillMount() {
+		(["characters", "houses", "alliances"]).forEach( t => {
+			this.getHeaders(t);
+		});
+		console.log(this.state);
+	}
 
     render() {
         return (
@@ -180,8 +223,9 @@ class Main extends React.Component {
 
     handleModifyData(event) {
         var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-        //this.getHeaders(event.target.value);
-        this.getRecord(event.target.value, field);
+		var t = event.target.value;
+        this.getHeaders(event.target.value);
+        setTimeout(() => { this.getRecord(t, field); }, 500);
         this.setState(update(this.state, {
           selected: { $set: event.target.value },
           update: { $set: true }

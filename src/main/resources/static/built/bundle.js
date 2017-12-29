@@ -103,41 +103,45 @@
 	            var _this2 = this;
 	
 	            return React.createElement(
-	                'table',
-	                { className: 'table table-striped' },
+	                'div',
+	                { id: 'table_dynamic' },
 	                React.createElement(
-	                    'thead',
-	                    null,
+	                    'table',
+	                    { className: 'table table-striped' },
 	                    React.createElement(
-	                        'tr',
+	                        'thead',
 	                        null,
-	                        this.props.data.thead.map(function (attr) {
-	                            return React.createElement(
-	                                'th',
-	                                { key: attr },
-	                                locale[attr]
-	                            );
+	                        React.createElement(
+	                            'tr',
+	                            null,
+	                            this.props.data.thead.map(function (attr) {
+	                                return React.createElement(
+	                                    'th',
+	                                    { key: attr },
+	                                    locale[attr]
+	                                );
+	                            })
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'tbody',
+	                        null,
+	                        this.props.data.tbody.map(function (row, i) {
+	                            if (!_this2.props.filter || _this2.props.filter && row[1] == _this2.props.character) {
+	                                return React.createElement(
+	                                    'tr',
+	                                    { key: i },
+	                                    row.map(function (attr, j) {
+	                                        return React.createElement(
+	                                            'td',
+	                                            { key: j },
+	                                            attr
+	                                        );
+	                                    })
+	                                );
+	                            }
 	                        })
 	                    )
-	                ),
-	                React.createElement(
-	                    'tbody',
-	                    null,
-	                    this.props.data.tbody.map(function (row, i) {
-	                        if (!_this2.props.filter || _this2.props.filter && row[1] == _this2.props.character) {
-	                            return React.createElement(
-	                                'tr',
-	                                { key: i },
-	                                row.map(function (attr, j) {
-	                                    return React.createElement(
-	                                        'td',
-	                                        { key: j },
-	                                        attr
-	                                    );
-	                                })
-	                            );
-	                        }
-	                    })
 	                )
 	            );
 	        }
@@ -152,13 +156,57 @@
 	    function Menu(props) {
 	        _classCallCheck(this, Menu);
 	
-	        return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
+	        var _this3 = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
+	
+	        _this3.state = {
+	            form: {}
+	        };
+	
+	        _this3.rest = __webpack_require__(187);
+	        _this3.mime = __webpack_require__(215);
+	        _this3.client = _this3.rest.wrap(_this3.mime);
+	        return _this3;
 	    }
 	
 	    _createClass(Menu, [{
+	        key: 'getHeaders',
+	        value: function getHeaders(table) {
+	            var _this4 = this;
+	
+	            this.client({
+	                method: 'POST',
+	                path: '/getHeaders',
+	                entity: JSON.stringify({
+	                    "name": table
+	                }),
+	                headers: {
+	                    'Content-Type': "application/json;charset=utf-8"
+	                }
+	            }).done(function (response) {
+	                _this4.setState((0, _immutabilityHelper2.default)(_this4.state, {
+	                    form: _defineProperty({}, table, { $set: {} })
+	                }));
+	                response.entity.map(function (row) {
+	                    _this4.setState((0, _immutabilityHelper2.default)(_this4.state, {
+	                        form: _defineProperty({}, table, _defineProperty({}, row[0], { $set: "" }))
+	                    }));
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            var _this5 = this;
+	
+	            ["characters", "houses", "alliances"].forEach(function (t) {
+	                _this5.getHeaders(t);
+	            });
+	            console.log(this.state);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this4 = this;
+	            var _this6 = this;
 	
 	            return React.createElement(
 	                'ul',
@@ -220,7 +268,7 @@
 	                    React.createElement(
 	                        'button',
 	                        { className: 'nav-link', onClick: function onClick(e) {
-	                                return _this4.props.handleFilter(e, true);
+	                                return _this6.props.handleFilter(e, true);
 	                            } },
 	                        'Sz\u0171r\xE9s karakterre'
 	                    )
@@ -231,7 +279,7 @@
 	                    React.createElement(
 	                        'button',
 	                        { className: 'nav-link', onClick: function onClick(e) {
-	                                return _this4.props.handleFilter(e, false);
+	                                return _this6.props.handleFilter(e, false);
 	                            } },
 	                        'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
 	                    )
@@ -255,7 +303,7 @@
 	    _createClass(PostDataForm, [{
 	        key: 'render',
 	        value: function render() {
-	            var _this6 = this;
+	            var _this8 = this;
 	
 	            return React.createElement(
 	                'form',
@@ -288,18 +336,18 @@
 	                                return React.createElement(
 	                                    'td',
 	                                    { key: i },
-	                                    React.createElement('input', { type: 'text', value: _this6.props.data[field], onChange: function onChange(e) {
-	                                            return _this6.props.onChange(e, field);
+	                                    React.createElement('input', { type: 'text', value: _this8.props.data[field], onChange: function onChange(e) {
+	                                            return _this8.props.onChange(e, field);
 	                                        } })
 	                                );
 	                            }),
 	                            function () {
-	                                if (typeof _this6.props.data['id'] !== 'undefined') {
+	                                if (typeof _this8.props.data['id'] !== 'undefined') {
 	                                    return React.createElement(
 	                                        'td',
 	                                        null,
 	                                        React.createElement('input', { className: 'btn btn-secondary btn-sm', type: 'submit', value: function () {
-	                                                if (_this6.props.update) {
+	                                                if (_this8.props.update) {
 	                                                    return 'Módosítás';
 	                                                } else {
 	                                                    return 'Felvétel';
@@ -324,9 +372,9 @@
 	    function Main(props) {
 	        _classCallCheck(this, Main);
 	
-	        var _this7 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
+	        var _this9 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 	
-	        _this7.state = {
+	        _this9.state = {
 	            form: {},
 	            table: {
 	                thead: Array(16).fill(null),
@@ -338,17 +386,17 @@
 	            character: ""
 	        };
 	
-	        _this7.rest = __webpack_require__(187);
-	        _this7.mime = __webpack_require__(215);
-	        _this7.client = _this7.rest.wrap(_this7.mime);
+	        _this9.rest = __webpack_require__(187);
+	        _this9.mime = __webpack_require__(215);
+	        _this9.client = _this9.rest.wrap(_this9.mime);
 	
-	        _this7.handleNewData = _this7.handleNewData.bind(_this7);
-	        _this7.handleModifyData = _this7.handleModifyData.bind(_this7);
-	        _this7.handleFormChange = _this7.handleFormChange.bind(_this7);
-	        _this7.handleFormSubmit = _this7.handleFormSubmit.bind(_this7);
-	        _this7.handleFilter = _this7.handleFilter.bind(_this7);
-	        _this7.zip = _this7.zip.bind(_this7);
-	        return _this7;
+	        _this9.handleNewData = _this9.handleNewData.bind(_this9);
+	        _this9.handleModifyData = _this9.handleModifyData.bind(_this9);
+	        _this9.handleFormChange = _this9.handleFormChange.bind(_this9);
+	        _this9.handleFormSubmit = _this9.handleFormSubmit.bind(_this9);
+	        _this9.handleFilter = _this9.handleFilter.bind(_this9);
+	        _this9.zip = _this9.zip.bind(_this9);
+	        return _this9;
 	    }
 	
 	    _createClass(Main, [{
@@ -372,9 +420,16 @@
 	    }, {
 	        key: 'handleModifyData',
 	        value: function handleModifyData(event) {
+	            var _this10 = this;
+	
 	            var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-	            //this.getHeaders(event.target.value);
-	            this.getRecord(event.target.value, field);
+	            /*this.getHeaders(event.target.value);
+	            this.getRecord(event.target.value, field);*/
+	            var t = event.target.value;
+	            this.getHeaders(event.target.value);
+	            setTimeout(function () {
+	                _this10.getRecord(t, field);
+	            }, 500);
 	            this.setState((0, _immutabilityHelper2.default)(this.state, {
 	                selected: { $set: event.target.value },
 	                update: { $set: true }
@@ -408,19 +463,19 @@
 	    }, {
 	        key: 'getTable',
 	        value: function getTable() {
-	            var _this8 = this;
+	            var _this11 = this;
 	
 	            this.client({
 	                method: 'GET', path: '/getTHead'
 	            }).done(function (response) {
-	                _this8.setState((0, _immutabilityHelper2.default)(_this8.state, {
+	                _this11.setState((0, _immutabilityHelper2.default)(_this11.state, {
 	                    table: { thead: { $set: response.entity } }
 	                }));
 	            });
 	            this.client({
 	                method: 'GET', path: '/getTBody'
 	            }).done(function (response) {
-	                _this8.setState((0, _immutabilityHelper2.default)(_this8.state, {
+	                _this11.setState((0, _immutabilityHelper2.default)(_this11.state, {
 	                    table: { tbody: { $set: response.entity } }
 	                }));
 	            });
@@ -429,7 +484,7 @@
 	    }, {
 	        key: 'getHeaders',
 	        value: function getHeaders(table) {
-	            var _this9 = this;
+	            var _this12 = this;
 	
 	            this.client({
 	                method: 'POST',
@@ -441,11 +496,11 @@
 	                    'Content-Type': "application/json;charset=utf-8"
 	                }
 	            }).done(function (response) {
-	                _this9.setState((0, _immutabilityHelper2.default)(_this9.state, {
+	                _this12.setState((0, _immutabilityHelper2.default)(_this12.state, {
 	                    form: { $set: {} }
 	                }));
 	                response.entity.map(function (row) {
-	                    _this9.setState((0, _immutabilityHelper2.default)(_this9.state, {
+	                    _this12.setState((0, _immutabilityHelper2.default)(_this12.state, {
 	                        form: _defineProperty({}, row[0], { $set: "" })
 	                    }));
 	                });
@@ -454,7 +509,7 @@
 	    }, {
 	        key: 'getRecord',
 	        value: function getRecord(table, field) {
-	            var _this10 = this;
+	            var _this13 = this;
 	
 	            var f = field.replace(' ', '').split(':');
 	            var e = {
@@ -478,9 +533,9 @@
 	                        'Content-Type': "application/json;charset=utf-8"
 	                    }
 	                }).done(function (response) {
-	                    console.log(Object.keys(_this10.state.form));
-	                    _this10.zip(Object.keys(_this10.state.form), response.entity[0]).map(function (field) {
-	                        _this10.setState((0, _immutabilityHelper2.default)(_this10.state, {
+	                    console.log(Object.keys(_this13.state.form));
+	                    _this13.zip(Object.keys(_this13.state.form), response.entity[0]).map(function (field) {
+	                        _this13.setState((0, _immutabilityHelper2.default)(_this13.state, {
 	                            form: _defineProperty({}, field[0], { $set: field[1] })
 	                        }));
 	                    });

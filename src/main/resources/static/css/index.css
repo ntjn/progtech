@@ -1,0 +1,19 @@
+#table_dynamic {
+    /*height: 70vh;*/
+    height: 50vh;
+    overflow: auto;
+}
+.dropdown-submenu {
+    position: absolute !important;
+    top: -100% !important;
+    left: 100% !important;
+    margin-top: -1px;
+}
+.submenu-content {
+	top: -100%;
+}
+.caret-right {
+    border-left: 4px solid;
+    border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+}

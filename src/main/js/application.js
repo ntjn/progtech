@@ -4,6 +4,8 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 
 import update from 'immutability-helper';
+import { Button } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 var locale = {
     id: 'Id',
@@ -16,7 +18,11 @@ var locale = {
     begin: 'Kezdet',
     end: 'Vég',
     crest: 'Címer',
-    motto: 'Mottó'
+    motto: 'Mottó',
+	characters: 'Karakterek',
+	houses: 'Házak',
+	alliances: 'Szövetségek'
+
 }
 
 function zip(p,q) {
@@ -64,13 +70,34 @@ class Table extends React.Component {
 class Menu extends React.Component {
     constructor(props) {
         super(props);
+		// TODO handle this
 		this.state = {
-			form: { }
+			dropdowns: { 
+				characters: ["dummy"],
+				houses: ["dummy"],
+				alliances: ["dummy"],
+			},
+			request: {
+				form: {
+					name: "characters"
+				},
+				field: {
+					name: "id",
+					value: "1"
+				}
+			},
+			showForm: {
+				characters: false,
+				houses: false,
+				alliances: false
+			}
 		};
 
         this.rest = require('rest');
         this.mime = require('rest/interceptor/mime');
         this.client = this.rest.wrap(this.mime);
+
+		this.toggleForm = this.toggleForm.bind(this);
     }
 
 	getHeaders(table) {
@@ -84,19 +111,11 @@ class Menu extends React.Component {
                 'Content-Type': "application/json;charset=utf-8"
             }
         }).done(response => {
-           this.setState(update(this.state, {
-             form: { [table]: { $set: { } } }
-           }));
-           response.entity.map(
-             row => {
-                this.setState(update(this.state, {
-                    form: {
-                        [table]: {
-							[row[0]]: { $set: "" }
-						}
-                    }
-                }));
-           })
+			this.setState(update(this.state, {
+				dropdowns: {
+					[table]: { $set: response.entity.map( row => { return row[0] } ) }
+				}
+			}));
         });
     }
 
@@ -104,7 +123,85 @@ class Menu extends React.Component {
 		(["characters", "houses", "alliances"]).forEach( t => {
 			this.getHeaders(t);
 		});
-		console.log(this.state);
+	}
+
+	updateForm(key, subKey, val) {
+		this.setState(update(this.state, { request: {
+			[key]: {
+				[subkey]: { $set: val }
+			},
+		}}));
+	}
+
+	toggleForm(event, selection) {
+		this.setState(update(this.state, {
+			showForm: {
+				[selection]: { $set: !this.state.showForm[selection] },
+			},
+			request: { form: { name: { $set: selection } } }
+        }));
+	}
+
+	renderSubDropdown(selection) {
+		return (
+			<div>
+				<Dropdown isOpen={this.state.showForm[selection]} toggle={ (e) => this.toggleForm(e, selection) }>
+					<DropdownToggle className="dropdown-item" caret>
+					{locale[selection]}
+					</DropdownToggle>
+					<DropdownMenu className="dropdown-submenu">
+						<div>
+							<form onSubmit={ (e) => {
+								e.preventDefault();
+								this.setState(update(this.state, { request: {
+									form: {
+										name: { $set: selection }
+									},
+									field: {
+										value: { $set: e.target.value }
+									}
+								}}));
+								/*updateForm("form", "name", selection);
+								updateForm("field", "value", e.target.value);*/
+								this.props.handleDropdown();
+								this.props.handleModifyData2(this.state.request);
+								console.log("submit:");
+								console.log(this.state);
+							}}>
+								<label>
+								Test
+								<div>
+									<select onChange={ (e) => {
+										this.setState(update(this.state, { request: {
+											field: {
+												name: { $set: e.target.value }
+											}
+										}}));
+										console.log("select-onchange:");
+										console.log(this.state);
+									}}>
+										{this.state.dropdowns[selection].map((field,i) => 
+											<option value={field}>{locale[field]}</option>
+										)}
+									</select>
+								</div>
+								<input type="text" value={this.state.request.field.value} onChange={ (e) => {
+									this.setState(update(this.state, { request: {
+										field: {
+											value: { $set: e.target.value }
+										}
+									}}));
+									console.log("input-onchange:");
+									console.log(this.state);
+								}}/>
+								<input type="submit" />
+								</label>
+							</form>
+						</div>
+					</DropdownMenu>
+				</Dropdown>
+			</div>
+		);
 	}
 
     render() {
@@ -131,9 +228,34 @@ class Menu extends React.Component {
                 <li className="nav-item">
                     <button className="nav-link" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
                 </li>
-            </ul>
+				<li className="nav-item dropdown">
+					<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown}>
+						<DropdownToggle className="nav-link dropdown-toggle">
+						Módosítás
+						</DropdownToggle>
+						<DropdownMenu>
+							<DropdownItem header>Módosítás</DropdownItem>
+							{this.renderSubDropdown("characters")}
+							{this.renderSubDropdown("houses")}
+							{this.renderSubDropdown("alliances")}
+						</DropdownMenu>
+					</Dropdown>
+				</li>
+			</ul>
         )
     }
+/*<li className="nav-item dropdown">
+					<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown}>
+						<DropdownToggle className="nav-link dropdown-toggle">
+						Dropdown
+						</DropdownToggle>
+						<DropdownMenu>
+							<DropdownItem header>D</DropdownItem>
+							{this.renderSubDropdown("characters")}
+						</DropdownMenu>
+					</Dropdown>
+				</li>*/
+
 }
 
 class PostDataForm extends React.Component {
@@ -190,6 +312,7 @@ class Main extends React.Component {
             selected: "",
             update: false,
             filter: false,
+			show: false,
             character: ""
         }
 
@@ -199,9 +322,12 @@ class Main extends React.Component {
 
         this.handleNewData = this.handleNewData.bind(this);
         this.handleModifyData = this.handleModifyData.bind(this);
+        this.handleModifyData2 = this.handleModifyData2.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
+		this.handleDropdown = this.handleDropdown.bind(this);
+
         this.zip = this.zip.bind(this);
     }
 
@@ -231,6 +357,21 @@ class Main extends React.Component {
           update: { $set: true }
         }));
     }
+
+	handleModifyData2(request) {
+        this.getHeaders(request.form.name);
+        this.setState(update(this.state, {
+          selected: { $set: request.form.name },
+          update: { $set: true }
+        }));
+        setTimeout(() => { this.getRecord(request); }, 500);
+    }
+
+	handleDropdown(event) {
+		this.setState(update(this.state, {
+          show: { $set: !this.state.show },
+        }));
+	}
 
     handleFormChange(event, field) {
         this.setState(update(this.state, {
@@ -271,7 +412,6 @@ class Main extends React.Component {
                 table: { tbody: { $set: response.entity } }
             }));
         });
-        console.log(this.state);
     }
 
     getHeaders(table) {
@@ -299,7 +439,7 @@ class Main extends React.Component {
         });
     }
 
-    getRecord(table, field) {
+    /*getRecord(table, field) {
         var f = field.replace(' ','').split(':');
         var e = { 
             "form": {
@@ -337,6 +477,48 @@ class Main extends React.Component {
             });
         }
         console.log(this.state);
+    }*/
+
+	getRecord(request) {
+        if (typeof request.field.value === "undefined") {
+            alert("something is undefined");
+        } else {
+            this.client({
+                method: 'POST',
+                path: '/getRecord',
+                entity: JSON.stringify(request),
+                headers: {
+                    'Content-Type': "application/json;charset=utf-8"
+                }
+            }).done(response => {
+				/*this.setState(update(this.state, {
+					form: { $set: { }
+				 }}));*/
+               /*this.zip(
+                 Object.keys(this.state.form),
+                 response.entity[0]
+               ).map(field => {
+                    this.setState(update(this.state, {
+                        form: {
+                            [request.form.name]: {
+								[field[0]]: { $set: field[1] }
+							}
+                        }
+                    }));
+					this.setState(this.state);
+               })*/
+				 this.zip(
+                 Object.keys(this.state.form),
+                 response.entity[0]
+               ).map(field => {
+                    this.setState(update(this.state, {
+                        form: {
+                            [field[0]]: { $set: field[1] }
+                        }
+                    }));
+               })
+            });
+        }
     }
 
     postForm() {
@@ -360,9 +542,12 @@ class Main extends React.Component {
             <div>
                 <Menu
                     data={this.state.form}
+					show={this.state.show}
                     handleNewData={this.handleNewData}
                     handleModifyData={this.handleModifyData}
+                    handleModifyData2={this.handleModifyData2}
                     handleFilter={this.handleFilter}
+					handleDropdown={this.handleDropdown}
                 />
                 <Table
                     getTableData={this.getTable}

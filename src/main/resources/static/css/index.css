@@ -1,8 +1,14 @@
+
 #table_dynamic {
     /*height: 70vh;*/
     height: 50vh;
     overflow: auto;
 }
+
+#top_bar {
+    background-color: #3a8da1;
+}
+
 .dropdown-submenu {
     position: absolute !important;
     top: -100% !important;
@@ -12,8 +18,20 @@
 .submenu-content {
 	top: -100%;
 }
+
 .caret-right {
     border-left: 4px solid;
     border-bottom: 4px solid transparent;
     border-top: 4px solid transparent;
+}
+
+.nav-tabs .nav-item {
+	margin-bottom: 0px !important;
+}
+
+.dropdown-item {
+	background-color: #fff !important;
+}
+.dropdown-header {
+	background-color: #fff !important;
 }

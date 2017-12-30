@@ -333,13 +333,13 @@
 	
 	            return React.createElement(
 	                'ul',
-	                { className: 'nav nav-tabs' },
+	                { className: 'nav nav-tabs', id: 'top_bar' },
 	                React.createElement(
 	                    'li',
 	                    { className: 'nav-item' },
 	                    React.createElement(
 	                        'select',
-	                        { className: 'nav-link dropdown-toggle', value: '\xDAj', onChange: this.props.handleNewData },
+	                        { className: 'nav-link dropdown-toggle btn btn-primary', value: '\xDAj', onChange: this.props.handleNewData },
 	                        React.createElement(
 	                            'option',
 	                            { className: 'dropdown-header', name: 'new' },
@@ -367,7 +367,7 @@
 	                    { className: 'nav-item' },
 	                    React.createElement(
 	                        'select',
-	                        { className: 'nav-link dropdown-toggle', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
+	                        { className: 'nav-link dropdown-toggle btn btn-primary', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
 	                        React.createElement(
 	                            'option',
 	                            { className: 'dropdown-header', value: 'modify' },
@@ -390,7 +390,7 @@
 	                    { className: 'nav-item' },
 	                    React.createElement(
 	                        'button',
-	                        { className: 'nav-link', onClick: function onClick(e) {
+	                        { className: 'nav-link btn btn-primary', onClick: function onClick(e) {
 	                                return _this7.props.handleFilter(e, true);
 	                            } },
 	                        'Sz\u0171r\xE9s karakterre'
@@ -401,35 +401,31 @@
 	                    { className: 'nav-item' },
 	                    React.createElement(
 	                        'button',
-	                        { className: 'nav-link', onClick: function onClick(e) {
+	                        { className: 'nav-link btn btn-primary', onClick: function onClick(e) {
 	                                return _this7.props.handleFilter(e, false);
 	                            } },
 	                        'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
 	                    )
 	                ),
 	                React.createElement(
-	                    'li',
-	                    { className: 'nav-item dropdown' },
+	                    _reactstrap.Dropdown,
+	                    { isOpen: this.props.show, toggle: this.props.handleDropdown, nav: 'true' },
 	                    React.createElement(
-	                        _reactstrap.Dropdown,
-	                        { isOpen: this.props.show, toggle: this.props.handleDropdown },
+	                        _reactstrap.DropdownToggle,
+	                        { color: '#307485', className: 'nav-link dropdown-toggle btn btn-primary' },
+	                        'M\xF3dos\xEDt\xE1s'
+	                    ),
+	                    React.createElement(
+	                        _reactstrap.DropdownMenu,
+	                        null,
 	                        React.createElement(
-	                            _reactstrap.DropdownToggle,
-	                            { className: 'nav-link dropdown-toggle' },
+	                            _reactstrap.DropdownItem,
+	                            { header: true },
 	                            'M\xF3dos\xEDt\xE1s'
 	                        ),
-	                        React.createElement(
-	                            _reactstrap.DropdownMenu,
-	                            null,
-	                            React.createElement(
-	                                _reactstrap.DropdownItem,
-	                                { header: true },
-	                                'M\xF3dos\xEDt\xE1s'
-	                            ),
-	                            this.renderSubDropdown("characters"),
-	                            this.renderSubDropdown("houses"),
-	                            this.renderSubDropdown("alliances")
-	                        )
+	                        this.renderSubDropdown("characters"),
+	                        this.renderSubDropdown("houses"),
+	                        this.renderSubDropdown("alliances")
 	                    )
 	                )
 	            );

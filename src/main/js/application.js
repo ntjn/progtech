@@ -206,9 +206,9 @@ class Menu extends React.Component {
 
     render() {
         return (
-            <ul className="nav nav-tabs">
+            <ul className="nav nav-tabs" id="top_bar">
                 <li className="nav-item">
-                    <select className="nav-link dropdown-toggle" value="Új" onChange={this.props.handleNewData}>
+                    <select className="nav-link dropdown-toggle btn btn-primary" value="Új" onChange={this.props.handleNewData}>
                         <option className="dropdown-header" name="new">Új</option>
                         <option className="dropdown-item" value="characters">Karakter</option>
                         <option className="dropdown-item" value="houses">Ház</option>
@@ -216,31 +216,29 @@ class Menu extends React.Component {
                     </select>
                 </li>
                 <li className="nav-item">
-                    <select className="nav-link dropdown-toggle" value="Módosítás" onChange={this.props.handleModifyData}>
+                    <select className="nav-link dropdown-toggle btn btn-primary" value="Módosítás" onChange={this.props.handleModifyData}>
                         <option className="dropdown-header" value="modify">Módosítás</option>
                         <option className="dropdown-item" value="characters">Karakter</option>
                         <option className="dropdown-item" value="alliances">Szövetség</option>
                     </select>
                 </li>
                 <li className="nav-item">
-                    <button className="nav-link" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
+                    <button className="nav-link btn btn-primary" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
                 </li>
                 <li className="nav-item">
-                    <button className="nav-link" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
+                    <button className="nav-link btn btn-primary" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
                 </li>
-				<li className="nav-item dropdown">
-					<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown}>
-						<DropdownToggle className="nav-link dropdown-toggle">
-						Módosítás
-						</DropdownToggle>
-						<DropdownMenu>
-							<DropdownItem header>Módosítás</DropdownItem>
-							{this.renderSubDropdown("characters")}
-							{this.renderSubDropdown("houses")}
-							{this.renderSubDropdown("alliances")}
-						</DropdownMenu>
-					</Dropdown>
-				</li>
+				<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown} nav="true">
+					<DropdownToggle color="#307485" className="nav-link dropdown-toggle btn btn-primary">
+					Módosítás
+					</DropdownToggle>
+					<DropdownMenu>
+						<DropdownItem header>Módosítás</DropdownItem>
+						{this.renderSubDropdown("characters")}
+						{this.renderSubDropdown("houses")}
+						{this.renderSubDropdown("alliances")}
+					</DropdownMenu>
+				</Dropdown>
 			</ul>
         )
     }

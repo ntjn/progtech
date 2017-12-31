@@ -1,7 +1,6 @@
 
 #table_dynamic {
-    /*height: 70vh;*/
-    height: 50vh;
+    height: 74vh;
     overflow: auto;
 }
 
@@ -19,10 +18,15 @@
 	top: -100%;
 }
 
-.caret-right {
-    border-left: 4px solid;
-    border-bottom: 4px solid transparent;
-    border-top: 4px solid transparent;
+.right-caret {
+    border-bottom: 5px solid transparent;
+    border-top: 5px solid transparent;
+    border-left: 7px solid #212529;
+    display: inline-block;
+    height: 0;
+    opacity: 0.9;
+    width: 0;
+	margin-left: 5px;
 }
 
 .nav-tabs .nav-item {
@@ -34,4 +38,8 @@
 }
 .dropdown-header {
 	background-color: #fff !important;
+}
+
+.w100 {
+	width: 100%;
 }

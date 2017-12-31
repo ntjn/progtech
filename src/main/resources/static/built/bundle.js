@@ -69,751 +69,723 @@
 	var client = __webpack_require__(199);
 	
 	var locale = {
-	    id: 'Id',
-	    name: 'Név',
-	    armySize: 'Sereg méret',
-	    state: 'Állapot',
-	    house: 'Ház',
-	    houseP: 'Ház 0',
-	    houseQ: 'Ház 1',
-	    begin: 'Kezdet',
-	    end: 'Vég',
-	    crest: 'Címer',
-	    motto: 'Mottó',
-	    characters: 'Karakterek',
-	    houses: 'Házak',
-	    alliances: 'Szövetségek'
-	
+	  id: 'Id',
+	  name: 'Név',
+	  armySize: 'Sereg méret',
+	  state: 'Állapot',
+	  house: 'Ház',
+	  houseP: 'Ház 0',
+	  houseQ: 'Ház 1',
+	  begin: 'Kezdet',
+	  end: 'Vég',
+	  crest: 'Címer',
+	  motto: 'Mottó',
+	  characters: 'Karakterek',
+	  houses: 'Házak',
+	  alliances: 'Szövetségek',
+	  field: 'Mező',
+	  value: 'Érték'
 	};
 	
 	function zip(p, q) {
-	    if (p.length > 1 || q.length > 2) {
-	        return [[p[0], q[0]]].concat(zip(p.slice(1), q.slice(1)));
-	    } else {
-	        return [[p[0], q[0]]];
-	    }
+	  if (p.length > 1 || q.length > 2) {
+	    return [[p[0], q[0]]].concat(zip(p.slice(1), q.slice(1)));
+	  } else {
+	    return [[p[0], q[0]]];
+	  }
 	}
 	
 	var Table = function (_React$Component) {
-	    _inherits(Table, _React$Component);
+	  _inherits(Table, _React$Component);
 	
-	    function Table(props) {
-	        _classCallCheck(this, Table);
+	  function Table(props) {
+	    _classCallCheck(this, Table);
 	
-	        return _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
+	    return _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
+	  }
+	
+	  _createClass(Table, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return React.createElement(
+	        'div',
+	        { id: 'table_dynamic' },
+	        React.createElement(
+	          'table',
+	          { className: 'table table-striped' },
+	          React.createElement(
+	            'thead',
+	            null,
+	            React.createElement(
+	              'tr',
+	              null,
+	              this.props.data.thead.map(function (attr) {
+	                return React.createElement(
+	                  'th',
+	                  { key: attr },
+	                  locale[attr]
+	                );
+	              })
+	            )
+	          ),
+	          React.createElement(
+	            'tbody',
+	            null,
+	            this.props.data.tbody.map(function (row, i) {
+	              if (!_this2.props.filter || _this2.props.filter && row[_this2.props.filtered.id] == _this2.props.filtered.value) {
+	                return React.createElement(
+	                  'tr',
+	                  { key: i },
+	                  row.map(function (attr, j) {
+	                    return React.createElement(
+	                      'td',
+	                      { key: j },
+	                      attr
+	                    );
+	                  })
+	                );
+	              }
+	            })
+	          )
+	        )
+	      );
 	    }
+	  }]);
 	
-	    _createClass(Table, [{
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-	
-	            return React.createElement(
-	                'div',
-	                { id: 'table_dynamic' },
-	                React.createElement(
-	                    'table',
-	                    { className: 'table table-striped' },
-	                    React.createElement(
-	                        'thead',
-	                        null,
-	                        React.createElement(
-	                            'tr',
-	                            null,
-	                            this.props.data.thead.map(function (attr) {
-	                                return React.createElement(
-	                                    'th',
-	                                    { key: attr },
-	                                    locale[attr]
-	                                );
-	                            })
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tbody',
-	                        null,
-	                        this.props.data.tbody.map(function (row, i) {
-	                            if (!_this2.props.filter || _this2.props.filter && row[1] == _this2.props.character) {
-	                                return React.createElement(
-	                                    'tr',
-	                                    { key: i },
-	                                    row.map(function (attr, j) {
-	                                        return React.createElement(
-	                                            'td',
-	                                            { key: j },
-	                                            attr
-	                                        );
-	                                    })
-	                                );
-	                            }
-	                        })
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return Table;
+	  return Table;
 	}(React.Component);
 	
 	var Menu = function (_React$Component2) {
-	    _inherits(Menu, _React$Component2);
+	  _inherits(Menu, _React$Component2);
 	
-	    function Menu(props) {
-	        _classCallCheck(this, Menu);
+	  function Menu(props) {
+	    _classCallCheck(this, Menu);
 	
-	        // TODO handle this
-	        var _this3 = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
+	    // TODO handle this
+	    var _this3 = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 	
-	        _this3.state = {
-	            dropdowns: {
-	                characters: ["dummy"],
-	                houses: ["dummy"],
-	                alliances: ["dummy"]
-	            },
-	            request: {
-	                form: {
-	                    name: "characters"
-	                },
-	                field: {
-	                    name: "id",
-	                    value: "1"
-	                }
-	            },
-	            showForm: {
-	                characters: false,
-	                houses: false,
-	                alliances: false
-	            }
-	        };
+	    _this3.state = {
+	      dropdowns: {
+	        characters: ["dummy"],
+	        houses: ["dummy"],
+	        alliances: ["dummy"]
+	      },
+	      request: {
+	        form: {
+	          name: "characters"
+	        },
+	        field: {
+	          name: "id",
+	          value: "1"
+	        }
+	      },
+	      showForm: {
+	        characters: false,
+	        houses: false,
+	        alliances: false,
+	        filterCharacters: false
+	      }
+	    };
 	
-	        _this3.rest = __webpack_require__(200);
-	        _this3.mime = __webpack_require__(228);
-	        _this3.client = _this3.rest.wrap(_this3.mime);
+	    _this3.rest = __webpack_require__(200);
+	    _this3.mime = __webpack_require__(228);
+	    _this3.client = _this3.rest.wrap(_this3.mime);
 	
-	        _this3.toggleForm = _this3.toggleForm.bind(_this3);
-	        return _this3;
+	    _this3.toggleForm = _this3.toggleForm.bind(_this3);
+	    return _this3;
+	  }
+	
+	  _createClass(Menu, [{
+	    key: 'getHeaders',
+	    value: function getHeaders(table) {
+	      var _this4 = this;
+	
+	      this.client({
+	        method: 'POST',
+	        path: '/getHeaders',
+	        entity: JSON.stringify({
+	          "name": table
+	        }),
+	        headers: {
+	          'Content-Type': "application/json;charset=utf-8"
+	        }
+	      }).done(function (response) {
+	        _this4.setState((0, _immutabilityHelper2.default)(_this4.state, {
+	          dropdowns: _defineProperty({}, table, { $set: response.entity.map(function (row) {
+	              return row[0];
+	            }) })
+	        }));
+	      });
 	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this5 = this;
 	
-	    _createClass(Menu, [{
-	        key: 'getHeaders',
-	        value: function getHeaders(table) {
-	            var _this4 = this;
+	      ["characters", "houses", "alliances"].forEach(function (t) {
+	        _this5.getHeaders(t);
+	      });
+	    }
+	  }, {
+	    key: 'updateForm',
+	    value: function updateForm(key, subKey, val) {
+	      this.setState((0, _immutabilityHelper2.default)(this.state, { request: _defineProperty({}, key, _defineProperty({}, subkey, { $set: val })) }));
+	    }
+	  }, {
+	    key: 'toggleForm',
+	    value: function toggleForm(event, selection) {
+	      this.setState((0, _immutabilityHelper2.default)(this.state, {
+	        showForm: _defineProperty({}, selection, { $set: !this.state.showForm[selection] }),
+	        request: { form: { name: { $set: selection } } }
+	      }));
+	    }
+	  }, {
+	    key: 'renderFilter',
+	    value: function renderFilter(selection, submitfunc) {
+	      var _this6 = this;
 	
-	            this.client({
-	                method: 'POST',
-	                path: '/getHeaders',
-	                entity: JSON.stringify({
-	                    "name": table
-	                }),
-	                headers: {
-	                    'Content-Type': "application/json;charset=utf-8"
-	                }
-	            }).done(function (response) {
-	                _this4.setState((0, _immutabilityHelper2.default)(_this4.state, {
-	                    dropdowns: _defineProperty({}, table, { $set: response.entity.map(function (row) {
-	                            return row[0];
-	                        }) })
-	                }));
-	            });
-	        }
-	    }, {
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {
-	            var _this5 = this;
-	
-	            ["characters", "houses", "alliances"].forEach(function (t) {
-	                _this5.getHeaders(t);
-	            });
-	        }
-	    }, {
-	        key: 'updateForm',
-	        value: function updateForm(key, subKey, val) {
-	            this.setState((0, _immutabilityHelper2.default)(this.state, { request: _defineProperty({}, key, _defineProperty({}, subkey, { $set: val })) }));
-	        }
-	    }, {
-	        key: 'toggleForm',
-	        value: function toggleForm(event, selection) {
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                showForm: _defineProperty({}, selection, { $set: !this.state.showForm[selection] }),
-	                request: { form: { name: { $set: selection } } }
-	            }));
-	        }
-	    }, {
-	        key: 'renderSubDropdown',
-	        value: function renderSubDropdown(selection) {
-	            var _this6 = this;
-	
-	            return React.createElement(
-	                'div',
+	      return React.createElement(
+	        _reactstrap.Dropdown,
+	        { isOpen: this.state.showForm["filterCharacters"], toggle: function toggle(e) {
+	            return _this6.toggleForm(e, "filterCharacters");
+	          } },
+	        React.createElement(
+	          _reactstrap.DropdownToggle,
+	          { color: '#307485', className: 'nav-link dropdown-toggle btn btn-primary' },
+	          'Sz\u0171r\xE9s karakterre'
+	        ),
+	        React.createElement(
+	          _reactstrap.DropdownMenu,
+	          null,
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'form',
+	              { className: 'card-body', onSubmit: function onSubmit(e) {
+	                  e.preventDefault();
+	                  _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
+	                      form: {
+	                        name: { $set: selection }
+	                      }
+	                    } }));
+	                  submitfunc(e, _this6.state.field);
+	                } },
+	              React.createElement(
+	                'label',
+	                { className: 'w100' },
+	                locale["field"],
+	                React.createElement(
+	                  'div',
+	                  null,
+	                  React.createElement(
+	                    'select',
+	                    { className: 'dropdown-toggle btn btn-primary w100', onChange: function onChange(e) {
+	                        _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
+	                            field: {
+	                              name: { $set: e.target.value }
+	                            }
+	                          } }));
+	                      } },
+	                    this.state.dropdowns[selection].map(function (field, i) {
+	                      return React.createElement(
+	                        'option',
+	                        { className: 'dropdown-item', value: field },
+	                        locale[field]
+	                      );
+	                    })
+	                  )
+	                )
+	              ),
+	              React.createElement(
+	                'label',
 	                null,
+	                locale["value"],
+	                React.createElement('input', { type: 'text', className: 'w100', value: this.state.request.field.value, onChange: function onChange(e) {
+	                    _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
+	                        field: {
+	                          value: { $set: e.target.value }
+	                        }
+	                      } }));
+	                  } }),
+	                React.createElement('input', { type: 'submit', className: 'btn btn-secondary mt-3 w100' })
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderSubDropdown',
+	    value: function renderSubDropdown(selection, submitfunc) {
+	      var _this7 = this;
+	
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          _reactstrap.Dropdown,
+	          { isOpen: this.state.showForm[selection], toggle: function toggle(e) {
+	              return _this7.toggleForm(e, selection);
+	            } },
+	          React.createElement(
+	            _reactstrap.DropdownToggle,
+	            { className: 'dropdown-item' },
+	            locale[selection],
+	            React.createElement('b', { className: 'right-caret' })
+	          ),
+	          React.createElement(
+	            _reactstrap.DropdownMenu,
+	            { className: 'dropdown-submenu' },
+	            React.createElement(
+	              'div',
+	              null,
+	              React.createElement(
+	                'form',
+	                { className: 'card-body', onSubmit: function onSubmit(e) {
+	                    e.preventDefault();
+	                    _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
+	                        form: {
+	                          name: { $set: selection }
+	                        }
+	                      } }));
+	                    submitfunc(e);
+	                  } },
 	                React.createElement(
-	                    _reactstrap.Dropdown,
-	                    { isOpen: this.state.showForm[selection], toggle: function toggle(e) {
-	                            return _this6.toggleForm(e, selection);
+	                  'label',
+	                  { className: 'w100' },
+	                  locale["field"],
+	                  React.createElement(
+	                    'div',
+	                    null,
+	                    React.createElement(
+	                      'select',
+	                      { className: 'dropdown-toggle btn btn-primary w100', onChange: function onChange(e) {
+	                          _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
+	                              field: {
+	                                name: { $set: e.target.value }
+	                              }
+	                            } }));
 	                        } },
-	                    React.createElement(
-	                        _reactstrap.DropdownToggle,
-	                        { className: 'dropdown-item', caret: true },
-	                        locale[selection]
-	                    ),
-	                    React.createElement(
-	                        _reactstrap.DropdownMenu,
-	                        { className: 'dropdown-submenu' },
-	                        React.createElement(
-	                            'div',
-	                            null,
-	                            React.createElement(
-	                                'form',
-	                                { onSubmit: function onSubmit(e) {
-	                                        e.preventDefault();
-	                                        _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
-	                                                form: {
-	                                                    name: { $set: selection }
-	                                                },
-	                                                field: {
-	                                                    value: { $set: e.target.value }
-	                                                }
-	                                            } }));
-	                                        /*updateForm("form", "name", selection);
-	                                        updateForm("field", "value", e.target.value);*/
-	                                        _this6.props.handleDropdown();
-	                                        _this6.props.handleModifyData2(_this6.state.request);
-	                                        console.log("submit:");
-	                                        console.log(_this6.state);
-	                                    } },
-	                                React.createElement(
-	                                    'label',
-	                                    null,
-	                                    'Test',
-	                                    React.createElement(
-	                                        'div',
-	                                        null,
-	                                        React.createElement(
-	                                            'select',
-	                                            { onChange: function onChange(e) {
-	                                                    _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
-	                                                            field: {
-	                                                                name: { $set: e.target.value }
-	                                                            }
-	                                                        } }));
-	                                                    console.log("select-onchange:");
-	                                                    console.log(_this6.state);
-	                                                } },
-	                                            this.state.dropdowns[selection].map(function (field, i) {
-	                                                return React.createElement(
-	                                                    'option',
-	                                                    { value: field },
-	                                                    locale[field]
-	                                                );
-	                                            })
-	                                        )
-	                                    ),
-	                                    React.createElement('input', { type: 'text', value: this.state.request.field.value, onChange: function onChange(e) {
-	                                            _this6.setState((0, _immutabilityHelper2.default)(_this6.state, { request: {
-	                                                    field: {
-	                                                        value: { $set: e.target.value }
-	                                                    }
-	                                                } }));
-	                                            console.log("input-onchange:");
-	                                            console.log(_this6.state);
-	                                        } }),
-	                                    React.createElement('input', { type: 'submit' })
-	                                )
-	                            )
-	                        )
+	                      this.state.dropdowns[selection].map(function (field, i) {
+	                        return React.createElement(
+	                          'option',
+	                          { className: 'dropdown-item', value: field },
+	                          locale[field]
+	                        );
+	                      })
 	                    )
+	                  )
+	                ),
+	                React.createElement(
+	                  'label',
+	                  null,
+	                  locale["value"],
+	                  React.createElement('input', { type: 'text', className: 'w100', value: this.state.request.field.value, onChange: function onChange(e) {
+	                      _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
+	                          field: {
+	                            value: { $set: e.target.value }
+	                          }
+	                        } }));
+	                    } }),
+	                  React.createElement('input', { type: 'submit', className: 'btn btn-secondary mt-3 w100' })
 	                )
-	            );
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this7 = this;
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this8 = this;
 	
-	            return React.createElement(
-	                'ul',
-	                { className: 'nav nav-tabs', id: 'top_bar' },
-	                React.createElement(
-	                    'li',
-	                    { className: 'nav-item' },
-	                    React.createElement(
-	                        'select',
-	                        { className: 'nav-link dropdown-toggle btn btn-primary', value: '\xDAj', onChange: this.props.handleNewData },
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-header', name: 'new' },
-	                            '\xDAj'
-	                        ),
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-item', value: 'characters' },
-	                            'Karakter'
-	                        ),
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-item', value: 'houses' },
-	                            'H\xE1z'
-	                        ),
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-item', value: 'alliances' },
-	                            'Sz\xF6vets\xE9g'
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'li',
-	                    { className: 'nav-item' },
-	                    React.createElement(
-	                        'select',
-	                        { className: 'nav-link dropdown-toggle btn btn-primary', value: 'M\xF3dos\xEDt\xE1s', onChange: this.props.handleModifyData },
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-header', value: 'modify' },
-	                            'M\xF3dos\xEDt\xE1s'
-	                        ),
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-item', value: 'characters' },
-	                            'Karakter'
-	                        ),
-	                        React.createElement(
-	                            'option',
-	                            { className: 'dropdown-item', value: 'alliances' },
-	                            'Sz\xF6vets\xE9g'
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'li',
-	                    { className: 'nav-item' },
-	                    React.createElement(
-	                        'button',
-	                        { className: 'nav-link btn btn-primary', onClick: function onClick(e) {
-	                                return _this7.props.handleFilter(e, true);
-	                            } },
-	                        'Sz\u0171r\xE9s karakterre'
-	                    )
-	                ),
-	                React.createElement(
-	                    'li',
-	                    { className: 'nav-item' },
-	                    React.createElement(
-	                        'button',
-	                        { className: 'nav-link btn btn-primary', onClick: function onClick(e) {
-	                                return _this7.props.handleFilter(e, false);
-	                            } },
-	                        'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
-	                    )
-	                ),
-	                React.createElement(
-	                    _reactstrap.Dropdown,
-	                    { isOpen: this.props.show, toggle: this.props.handleDropdown, nav: 'true' },
-	                    React.createElement(
-	                        _reactstrap.DropdownToggle,
-	                        { color: '#307485', className: 'nav-link dropdown-toggle btn btn-primary' },
-	                        'M\xF3dos\xEDt\xE1s'
-	                    ),
-	                    React.createElement(
-	                        _reactstrap.DropdownMenu,
-	                        null,
-	                        React.createElement(
-	                            _reactstrap.DropdownItem,
-	                            { header: true },
-	                            'M\xF3dos\xEDt\xE1s'
-	                        ),
-	                        this.renderSubDropdown("characters"),
-	                        this.renderSubDropdown("houses"),
-	                        this.renderSubDropdown("alliances")
-	                    )
-	                )
-	            );
-	        }
-	        /*<li className="nav-item dropdown">
-	        					<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown}>
-	        						<DropdownToggle className="nav-link dropdown-toggle">
-	        						Dropdown
-	        						</DropdownToggle>
-	        						<DropdownMenu>
-	        							<DropdownItem header>D</DropdownItem>
-	        							{this.renderSubDropdown("characters")}
-	        						</DropdownMenu>
-	        					</Dropdown>
-	        				</li>*/
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'ul',
+	          { className: 'nav nav-tabs', id: 'top_bar' },
+	          React.createElement(
+	            'li',
+	            { className: 'nav-item' },
+	            React.createElement(
+	              'select',
+	              { className: 'nav-link dropdown-toggle btn btn-primary', value: '\xDAj', onChange: this.props.handleNewData },
+	              React.createElement(
+	                'option',
+	                { className: 'dropdown-header', name: 'new' },
+	                '\xDAj'
+	              ),
+	              React.createElement(
+	                'option',
+	                { className: 'dropdown-item', value: 'characters' },
+	                'Karakter'
+	              ),
+	              React.createElement(
+	                'option',
+	                { className: 'dropdown-item', value: 'houses' },
+	                'H\xE1z'
+	              ),
+	              React.createElement(
+	                'option',
+	                { className: 'dropdown-item', value: 'alliances' },
+	                'Sz\xF6vets\xE9g'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            _reactstrap.Dropdown,
+	            { isOpen: this.props.show, toggle: this.props.handleDropdown, nav: 'true' },
+	            React.createElement(
+	              _reactstrap.DropdownToggle,
+	              { color: '#307485', className: 'nav-link dropdown-toggle btn btn-primary' },
+	              'M\xF3dos\xEDt\xE1s'
+	            ),
+	            React.createElement(
+	              _reactstrap.DropdownMenu,
+	              null,
+	              React.createElement(
+	                _reactstrap.DropdownItem,
+	                { header: true },
+	                'M\xF3dos\xEDt\xE1s'
+	              ),
+	              ["characters", "houses", "alliances"].map(function (tabl) {
+	                return _this8.renderSubDropdown(tabl, function (e) {
+	                  _this8.props.modifyData(e, _this8.state.request);
+	                  _this8.props.handleDropdown(e);
+	                });
+	              })
+	            )
+	          ),
+	          this.renderFilter("characters", function (e) {
+	            var nid = -1;
+	            for (var i = 0; i < _this8.state.dropdowns.characters.length; ++i) {
+	              if (_this8.state.dropdowns.characters[i] == _this8.state.request.field.name) {
+	                nid = i;
+	              }
+	            }
+	            _this8.props.handleFilter(e, { id: nid, value: _this8.state.request.field.value }, true);
+	            _this8.toggleForm(e, "filterCharacters");
+	          }),
+	          React.createElement(
+	            'li',
+	            { className: 'nav-item' },
+	            React.createElement(
+	              'button',
+	              { className: 'nav-link btn btn-primary', onClick: function onClick(e) {
+	                  return _this8.props.handleFilter(e, false);
+	                } },
+	              'Sz\u0171r\xE9s megsz\xFCntet\xE9se'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
 	
-	    }]);
-	
-	    return Menu;
+	  return Menu;
 	}(React.Component);
 	
 	var PostDataForm = function (_React$Component3) {
-	    _inherits(PostDataForm, _React$Component3);
+	  _inherits(PostDataForm, _React$Component3);
 	
-	    function PostDataForm(props) {
-	        _classCallCheck(this, PostDataForm);
+	  function PostDataForm(props) {
+	    _classCallCheck(this, PostDataForm);
 	
-	        return _possibleConstructorReturn(this, (PostDataForm.__proto__ || Object.getPrototypeOf(PostDataForm)).call(this, props));
+	    return _possibleConstructorReturn(this, (PostDataForm.__proto__ || Object.getPrototypeOf(PostDataForm)).call(this, props));
+	  }
+	
+	  _createClass(PostDataForm, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this10 = this;
+	
+	      return React.createElement(
+	        'form',
+	        { onSubmit: this.props.handleSubmit },
+	        React.createElement(
+	          'table',
+	          { className: 'table table-striped' },
+	          React.createElement(
+	            'thead',
+	            null,
+	            React.createElement(
+	              'tr',
+	              null,
+	              Object.keys(this.props.data).slice(1).map(function (field, i) {
+	                return React.createElement(
+	                  'th',
+	                  { key: i },
+	                  locale[field]
+	                );
+	              })
+	            )
+	          ),
+	          React.createElement(
+	            'tbody',
+	            null,
+	            React.createElement(
+	              'tr',
+	              null,
+	              Object.keys(this.props.data).slice(1).map(function (field, i) {
+	                return React.createElement(
+	                  'td',
+	                  { key: i },
+	                  React.createElement('input', { type: 'text', value: _this10.props.data[field], onChange: function onChange(e) {
+	                      return _this10.props.onChange(e, field);
+	                    } })
+	                );
+	              }),
+	              function () {
+	                if (typeof _this10.props.data['id'] !== 'undefined') {
+	                  return React.createElement(
+	                    'td',
+	                    null,
+	                    React.createElement('input', { className: 'btn btn-secondary btn-sm', type: 'submit', value: function () {
+	                        if (_this10.props.update) {
+	                          return 'Módosítás';
+	                        } else {
+	                          return 'Felvétel';
+	                        }
+	                      }() })
+	                  );
+	                }
+	              }()
+	            )
+	          )
+	        )
+	      );
 	    }
+	  }]);
 	
-	    _createClass(PostDataForm, [{
-	        key: 'render',
-	        value: function render() {
-	            var _this9 = this;
-	
-	            return React.createElement(
-	                'form',
-	                { onSubmit: this.props.handleSubmit },
-	                React.createElement(
-	                    'table',
-	                    { className: 'table table-striped' },
-	                    React.createElement(
-	                        'thead',
-	                        null,
-	                        React.createElement(
-	                            'tr',
-	                            null,
-	                            Object.keys(this.props.data).map(function (field, i) {
-	                                return React.createElement(
-	                                    'th',
-	                                    { key: i },
-	                                    locale[field]
-	                                );
-	                            })
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tbody',
-	                        null,
-	                        React.createElement(
-	                            'tr',
-	                            null,
-	                            Object.keys(this.props.data).map(function (field, i) {
-	                                return React.createElement(
-	                                    'td',
-	                                    { key: i },
-	                                    React.createElement('input', { type: 'text', value: _this9.props.data[field], onChange: function onChange(e) {
-	                                            return _this9.props.onChange(e, field);
-	                                        } })
-	                                );
-	                            }),
-	                            function () {
-	                                if (typeof _this9.props.data['id'] !== 'undefined') {
-	                                    return React.createElement(
-	                                        'td',
-	                                        null,
-	                                        React.createElement('input', { className: 'btn btn-secondary btn-sm', type: 'submit', value: function () {
-	                                                if (_this9.props.update) {
-	                                                    return 'Módosítás';
-	                                                } else {
-	                                                    return 'Felvétel';
-	                                                }
-	                                            }() })
-	                                    );
-	                                }
-	                            }()
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-	
-	    return PostDataForm;
+	  return PostDataForm;
 	}(React.Component);
 	
 	var Main = function (_React$Component4) {
-	    _inherits(Main, _React$Component4);
+	  _inherits(Main, _React$Component4);
 	
-	    function Main(props) {
-	        _classCallCheck(this, Main);
+	  function Main(props) {
+	    _classCallCheck(this, Main);
 	
-	        var _this10 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
+	    var _this11 = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 	
-	        _this10.state = {
-	            form: {},
-	            table: {
-	                thead: Array(16).fill(null),
-	                tbody: Array(64).fill(Array(16).fill(null))
-	            },
-	            selected: "",
-	            update: false,
-	            filter: false,
-	            show: false,
-	            character: ""
-	        };
+	    _this11.state = {
+	      form: {},
+	      table: {
+	        thead: Array(16).fill(null),
+	        tbody: Array(64).fill(Array(16).fill(null))
+	      },
+	      selected: "",
+	      update: false,
+	      filter: false,
+	      show: false,
+	      character: "",
+	      filtered: {
+	        id: 0,
+	        value: 0
+	      }
+	    };
 	
-	        _this10.rest = __webpack_require__(200);
-	        _this10.mime = __webpack_require__(228);
-	        _this10.client = _this10.rest.wrap(_this10.mime);
+	    _this11.rest = __webpack_require__(200);
+	    _this11.mime = __webpack_require__(228);
+	    _this11.client = _this11.rest.wrap(_this11.mime);
 	
-	        _this10.handleNewData = _this10.handleNewData.bind(_this10);
-	        _this10.handleModifyData = _this10.handleModifyData.bind(_this10);
-	        _this10.handleModifyData2 = _this10.handleModifyData2.bind(_this10);
-	        _this10.handleFormChange = _this10.handleFormChange.bind(_this10);
-	        _this10.handleFormSubmit = _this10.handleFormSubmit.bind(_this10);
-	        _this10.handleFilter = _this10.handleFilter.bind(_this10);
-	        _this10.handleDropdown = _this10.handleDropdown.bind(_this10);
+	    _this11.handleNewData = _this11.handleNewData.bind(_this11);
+	    _this11.modifyData = _this11.modifyData.bind(_this11);
+	    _this11.handleFormChange = _this11.handleFormChange.bind(_this11);
+	    _this11.handleFormSubmit = _this11.handleFormSubmit.bind(_this11);
+	    _this11.handleFilter = _this11.handleFilter.bind(_this11);
+	    _this11.handleDropdown = _this11.handleDropdown.bind(_this11);
 	
-	        _this10.zip = _this10.zip.bind(_this10);
-	        return _this10;
+	    _this11.zip = _this11.zip.bind(_this11);
+	    return _this11;
+	  }
+	
+	  _createClass(Main, [{
+	    key: 'zip',
+	    value: function zip(p, q) {
+	      if (p.length > 1 || q.length > 2) {
+	        return this.zip(p.slice(1), q.slice(1)).concat([[p[0], q[0]]]);
+	      } else {
+	        return [[p[0], q[0]]];
+	      }
 	    }
+	  }, {
+	    key: 'handleNewData',
+	    value: function handleNewData(event) {
+	      this.getHeaders(event.target.value);
+	      this.setState((0, _immutabilityHelper2.default)(this.state, {
+	        selected: { $set: event.target.value },
+	        update: { $set: false }
+	      }));
+	    }
+	  }, {
+	    key: 'handleDropdown',
+	    value: function handleDropdown(event) {
+	      console.log("dropdownhandler called.");
+	      console.log(this.state.show);
+	      this.setState((0, _immutabilityHelper2.default)(this.state, {
+	        show: { $set: !this.state.show }
+	      }));
+	    }
+	  }, {
+	    key: 'handleFormChange',
+	    value: function handleFormChange(event, field) {
+	      this.setState((0, _immutabilityHelper2.default)(this.state, {
+	        form: _defineProperty({}, field, { $set: event.target.value })
+	      }));
+	    }
+	  }, {
+	    key: 'handleFormSubmit',
+	    value: function handleFormSubmit(event) {
+	      event.preventDefault();
+	      this.postForm();
+	    }
+	  }, {
+	    key: 'handleFilter',
+	    value: function handleFilter(event, field, whether) {
+	      this.setState((0, _immutabilityHelper2.default)(this.state, {
+	        filter: { $set: whether },
+	        filtered: { $set: field },
+	        update: { $set: true }
+	      }));
+	    }
+	  }, {
+	    key: 'modifyData',
+	    value: function modifyData(event, request) {
+	      var _this12 = this;
 	
-	    _createClass(Main, [{
-	        key: 'zip',
-	        value: function zip(p, q) {
-	            if (p.length > 1 || q.length > 2) {
-	                return this.zip(p.slice(1), q.slice(1)).concat([[p[0], q[0]]]);
-	            } else {
-	                return [[p[0], q[0]]];
-	            }
+	      /*this.setState(update(this.state, {
+	        ["update"]: { $set: true }
+	      }));*/
+	      this.getHeaders(request.form.name);
+	      setTimeout(function () {
+	        _this12.getRecord(request);
+	      }, 500);
+	      console.log(this.state);
+	    }
+	  }, {
+	    key: 'getTable',
+	    value: function getTable() {
+	      var _this13 = this;
+	
+	      this.client({
+	        method: 'GET', path: '/getTHead'
+	      }).done(function (response) {
+	        _this13.setState((0, _immutabilityHelper2.default)(_this13.state, {
+	          table: { thead: { $set: response.entity } }
+	        }));
+	      });
+	      this.client({
+	        method: 'GET', path: '/getTBody'
+	      }).done(function (response) {
+	        _this13.setState((0, _immutabilityHelper2.default)(_this13.state, {
+	          table: { tbody: { $set: response.entity } }
+	        }));
+	      });
+	    }
+	  }, {
+	    key: 'getHeaders',
+	    value: function getHeaders(table) {
+	      var _this14 = this;
+	
+	      this.client({
+	        method: 'POST',
+	        path: '/getHeaders',
+	        entity: JSON.stringify({
+	          "name": table
+	        }),
+	        headers: {
+	          'Content-Type': "application/json;charset=utf-8"
 	        }
-	    }, {
-	        key: 'handleNewData',
-	        value: function handleNewData(event) {
-	            this.getHeaders(event.target.value);
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                selected: { $set: event.target.value },
-	                update: { $set: false }
+	      }).done(function (response) {
+	        _this14.setState((0, _immutabilityHelper2.default)(_this14.state, {
+	          form: { $set: {} }
+	        }));
+	        response.entity.map(function (row) {
+	          _this14.setState((0, _immutabilityHelper2.default)(_this14.state, {
+	            form: _defineProperty({}, row[0], { $set: "" })
+	          }));
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'getRecord',
+	    value: function getRecord(request) {
+	      var _this15 = this;
+	
+	      if (typeof request.field.value === "undefined") {
+	        alert("something is undefined");
+	      } else {
+	        this.client({
+	          method: 'POST',
+	          path: '/getRecord',
+	          entity: JSON.stringify(request),
+	          headers: {
+	            'Content-Type': "application/json;charset=utf-8"
+	          }
+	        }).done(function (response) {
+	          _this15.zip(Object.keys(_this15.state.form), response.entity[0]).map(function (field) {
+	            _this15.setState((0, _immutabilityHelper2.default)(_this15.state, {
+	              form: _defineProperty({}, field[0], { $set: field[1] })
 	            }));
+	          });
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'postForm',
+	    value: function postForm() {
+	      this.client({
+	        method: 'POST',
+	        path: '/' + (this.state.update ? 'update' : 'save') + this.state.selected.substr(0, 1).toUpperCase() + this.state.selected.substr(1).slice(0, -1),
+	        entity: JSON.stringify(this.state.form),
+	        headers: {
+	          'Content-Type': "application/json;charset=utf-8"
 	        }
-	    }, {
-	        key: 'handleModifyData',
-	        value: function handleModifyData(event) {
-	            var _this11 = this;
+	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.getTable();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(Menu, {
+	          data: this.state.form,
+	          show: this.state.show,
+	          handleNewData: this.handleNewData,
+	          handleFilter: this.handleFilter,
+	          handleDropdown: this.handleDropdown,
+	          modifyData: this.modifyData
+	        }),
+	        React.createElement(Table, {
+	          getTableData: this.getTable,
+	          data: this.state.table,
+	          filter: this.state.filter,
+	          filtered: this.state.filtered,
+	          character: this.state.character
+	        }),
+	        React.createElement(PostDataForm, {
+	          data: this.state.form,
+	          update: this.state.update,
+	          onChange: this.handleFormChange,
+	          handleSubmit: this.handleFormSubmit
+	        })
+	      );
+	    }
+	  }]);
 	
-	            var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-	            var t = event.target.value;
-	            this.getHeaders(event.target.value);
-	            setTimeout(function () {
-	                _this11.getRecord(t, field);
-	            }, 500);
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                selected: { $set: event.target.value },
-	                update: { $set: true }
-	            }));
-	        }
-	    }, {
-	        key: 'handleModifyData2',
-	        value: function handleModifyData2(request) {
-	            var _this12 = this;
-	
-	            this.getHeaders(request.form.name);
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                selected: { $set: request.form.name },
-	                update: { $set: true }
-	            }));
-	            setTimeout(function () {
-	                _this12.getRecord(request);
-	            }, 500);
-	        }
-	    }, {
-	        key: 'handleDropdown',
-	        value: function handleDropdown(event) {
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                show: { $set: !this.state.show }
-	            }));
-	        }
-	    }, {
-	        key: 'handleFormChange',
-	        value: function handleFormChange(event, field) {
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                form: _defineProperty({}, field, { $set: event.target.value })
-	            }));
-	        }
-	    }, {
-	        key: 'handleFormSubmit',
-	        value: function handleFormSubmit(event) {
-	            event.preventDefault();
-	            this.postForm();
-	        }
-	    }, {
-	        key: 'handleFilter',
-	        value: function handleFilter(event, whether) {
-	            var field;
-	            if (whether) {
-	                field = prompt("Kérem adja meg a karakter nevét");
-	            }
-	            this.setState((0, _immutabilityHelper2.default)(this.state, {
-	                filter: { $set: whether },
-	                character: { $set: field === "undefined" ? "" : field }
-	            }));
-	        }
-	    }, {
-	        key: 'getTable',
-	        value: function getTable() {
-	            var _this13 = this;
-	
-	            this.client({
-	                method: 'GET', path: '/getTHead'
-	            }).done(function (response) {
-	                _this13.setState((0, _immutabilityHelper2.default)(_this13.state, {
-	                    table: { thead: { $set: response.entity } }
-	                }));
-	            });
-	            this.client({
-	                method: 'GET', path: '/getTBody'
-	            }).done(function (response) {
-	                _this13.setState((0, _immutabilityHelper2.default)(_this13.state, {
-	                    table: { tbody: { $set: response.entity } }
-	                }));
-	            });
-	        }
-	    }, {
-	        key: 'getHeaders',
-	        value: function getHeaders(table) {
-	            var _this14 = this;
-	
-	            this.client({
-	                method: 'POST',
-	                path: '/getHeaders',
-	                entity: JSON.stringify({
-	                    "name": table
-	                }),
-	                headers: {
-	                    'Content-Type': "application/json;charset=utf-8"
-	                }
-	            }).done(function (response) {
-	                _this14.setState((0, _immutabilityHelper2.default)(_this14.state, {
-	                    form: { $set: {} }
-	                }));
-	                response.entity.map(function (row) {
-	                    _this14.setState((0, _immutabilityHelper2.default)(_this14.state, {
-	                        form: _defineProperty({}, row[0], { $set: "" })
-	                    }));
-	                });
-	            });
-	        }
-	
-	        /*getRecord(table, field) {
-	            var f = field.replace(' ','').split(':');
-	            var e = { 
-	                "form": {
-	                    "name": table
-	                },
-	                "field": {
-	                    "name": f[0],
-	                    "value": f[1]
-	                }
-	            }
-	            console.log(e);
-	            if (typeof field === "undefined") {
-	                alert("something is undefined");
-	            } else {
-	                this.client({
-	                    method: 'POST',
-	                    path: '/getRecord',
-	                    entity: JSON.stringify(e),
-	                    headers: {
-	                        'Content-Type': "application/json;charset=utf-8"
-	                    }
-	                }).done(response => {
-	                   console.log(Object.keys(this.state.form));
-	                   this.zip(
-	                     Object.keys(this.state.form),
-	                     response.entity[0]
-	                   ).map(field => {
-	                        this.setState(update(this.state, {
-	                            form: {
-	                                [field[0]]: { $set: field[1] }
-	                            }
-	                        }));
-	                   })
-	                   console.log(response);
-	                });
-	            }
-	            console.log(this.state);
-	        }*/
-	
-	    }, {
-	        key: 'getRecord',
-	        value: function getRecord(request) {
-	            var _this15 = this;
-	
-	            if (typeof request.field.value === "undefined") {
-	                alert("something is undefined");
-	            } else {
-	                this.client({
-	                    method: 'POST',
-	                    path: '/getRecord',
-	                    entity: JSON.stringify(request),
-	                    headers: {
-	                        'Content-Type': "application/json;charset=utf-8"
-	                    }
-	                }).done(function (response) {
-	                    /*this.setState(update(this.state, {
-	                    	form: { $set: { }
-	                     }}));*/
-	                    /*this.zip(
-	                      Object.keys(this.state.form),
-	                      response.entity[0]
-	                    ).map(field => {
-	                         this.setState(update(this.state, {
-	                             form: {
-	                                 [request.form.name]: {
-	                    [field[0]]: { $set: field[1] }
-	                    }
-	                             }
-	                         }));
-	                    this.setState(this.state);
-	                    })*/
-	                    _this15.zip(Object.keys(_this15.state.form), response.entity[0]).map(function (field) {
-	                        _this15.setState((0, _immutabilityHelper2.default)(_this15.state, {
-	                            form: _defineProperty({}, field[0], { $set: field[1] })
-	                        }));
-	                    });
-	                });
-	            }
-	        }
-	    }, {
-	        key: 'postForm',
-	        value: function postForm() {
-	            this.client({
-	                method: 'POST',
-	                path: '/' + (this.state.update ? 'update' : 'save') + this.state.selected.substr(0, 1).toUpperCase() + this.state.selected.substr(1).slice(0, -1),
-	                entity: JSON.stringify(this.state.form),
-	                headers: {
-	                    'Content-Type': "application/json;charset=utf-8"
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            this.getTable();
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(Menu, {
-	                    data: this.state.form,
-	                    show: this.state.show,
-	                    handleNewData: this.handleNewData,
-	                    handleModifyData: this.handleModifyData,
-	                    handleModifyData2: this.handleModifyData2,
-	                    handleFilter: this.handleFilter,
-	                    handleDropdown: this.handleDropdown
-	                }),
-	                React.createElement(Table, {
-	                    getTableData: this.getTable,
-	                    data: this.state.table,
-	                    filter: this.state.filter,
-	                    character: this.state.character
-	                }),
-	                React.createElement(PostDataForm, {
-	                    data: this.state.form,
-	                    update: this.state.update,
-	                    onChange: this.handleFormChange,
-	                    handleSubmit: this.handleFormSubmit
-	                })
-	            );
-	        }
-	    }]);
-	
-	    return Main;
+	  return Main;
 	}(React.Component);
 	
 	ReactDOM.render(React.createElement(Main, null), document.getElementById('react'));

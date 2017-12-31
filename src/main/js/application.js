@@ -21,8 +21,9 @@ var locale = {
     motto: 'Mottó',
 	characters: 'Karakterek',
 	houses: 'Házak',
-	alliances: 'Szövetségek'
-
+	alliances: 'Szövetségek',
+	field: 'Mező',
+	value: 'Érték'
 }
 
 function zip(p,q) {
@@ -51,7 +52,7 @@ class Table extends React.Component {
 					</thead>
 					<tbody>
 						{this.props.data.tbody.map((row,i) => {
-							if(!this.props.filter || (this.props.filter && row[1] == this.props.character)) {
+							if(!this.props.filter || (this.props.filter && row[this.props.filtered.id] == this.props.filtered.value)) {
 							return (
 								<tr key={i}>
 									{row.map((attr,j) => {
@@ -89,7 +90,8 @@ class Menu extends React.Component {
 			showForm: {
 				characters: false,
 				houses: false,
-				alliances: false
+				alliances: false,
+				filterCharacters: false
 			}
 		};
 
@@ -142,59 +144,101 @@ class Menu extends React.Component {
         }));
 	}
 
-	renderSubDropdown(selection) {
+	renderFilter(selection, submitfunc) {
 		return (
-			<div>
-				<Dropdown isOpen={this.state.showForm[selection]} toggle={ (e) => this.toggleForm(e, selection) }>
-					<DropdownToggle className="dropdown-item" caret>
-					{locale[selection]}
+				<Dropdown isOpen={this.state.showForm["filterCharacters"]} toggle={ (e) => this.toggleForm(e, "filterCharacters") }>
+					<DropdownToggle color="#307485" className="nav-link dropdown-toggle btn btn-primary">
+					Szűrés karakterre
 					</DropdownToggle>
-					<DropdownMenu className="dropdown-submenu">
+					<DropdownMenu>
 						<div>
-							<form onSubmit={ (e) => {
+							<form className="card-body" onSubmit={ (e) => {
 								e.preventDefault();
 								this.setState(update(this.state, { request: {
 									form: {
 										name: { $set: selection }
 									},
-									field: {
-										value: { $set: e.target.value }
-									}
 								}}));
-								/*updateForm("form", "name", selection);
-								updateForm("field", "value", e.target.value);*/
-								this.props.handleDropdown();
-								this.props.handleModifyData2(this.state.request);
-								console.log("submit:");
-								console.log(this.state);
+								submitfunc(e, this.state.field);
 							}}>
-								<label>
-								Test
+								<label className="w100">
+								{locale["field"]}
 								<div>
-									<select onChange={ (e) => {
+									<select className="dropdown-toggle btn btn-primary w100" onChange={ (e) => {
 										this.setState(update(this.state, { request: {
 											field: {
 												name: { $set: e.target.value }
 											}
 										}}));
-										console.log("select-onchange:");
-										console.log(this.state);
 									}}>
 										{this.state.dropdowns[selection].map((field,i) => 
-											<option value={field}>{locale[field]}</option>
+											<option className="dropdown-item" value={field}>{locale[field]}</option>
 										)}
 									</select>
 								</div>
-								<input type="text" value={this.state.request.field.value} onChange={ (e) => {
+								</label>
+								<label>
+								{locale["value"]}
+								<input type="text" className="w100" value={this.state.request.field.value} onChange={ (e) => {
 									this.setState(update(this.state, { request: {
 										field: {
 											value: { $set: e.target.value }
 										}
 									}}));
-									console.log("input-onchange:");
-									console.log(this.state);
 								}}/>
-								<input type="submit" />
+								<input type="submit" className="btn btn-secondary mt-3 w100" />
+								</label>
+							</form>
+						</div>
+					</DropdownMenu>
+				</Dropdown>
+		);
+	}
+
+	renderSubDropdown(selection, submitfunc) {
+		return (
+			<div>
+				<Dropdown isOpen={this.state.showForm[selection]} toggle={ (e) => this.toggleForm(e, selection) }>
+					<DropdownToggle className="dropdown-item">
+					{locale[selection]}<b className="right-caret"/>
+					</DropdownToggle>
+					<DropdownMenu className="dropdown-submenu">
+						<div>
+							<form className="card-body" onSubmit={ (e) => {
+								e.preventDefault();
+								this.setState(update(this.state, { request: {
+									form: {
+										name: { $set: selection }
+									},
+								}}));
+								submitfunc(e);
+							}}>
+								<label className="w100">
+								{locale["field"]}
+								<div>
+									<select className="dropdown-toggle btn btn-primary w100" onChange={ (e) => {
+										this.setState(update(this.state, { request: {
+											field: {
+												name: { $set: e.target.value }
+											}
+										}}));
+									}}>
+										{this.state.dropdowns[selection].map((field,i) => 
+											<option className="dropdown-item" value={field}>{locale[field]}</option>
+										)}
+									</select>
+								</div>
+								</label>
+								<label>
+								{locale["value"]}
+								<input type="text" className="w100" value={this.state.request.field.value} onChange={ (e) => {
+									this.setState(update(this.state, { request: {
+										field: {
+											value: { $set: e.target.value }
+										}
+									}}));
+								}}/>
+								<input type="submit" className="btn btn-secondary mt-3 w100"/>
 								</label>
 							</form>
 						</div>
@@ -206,6 +250,7 @@ class Menu extends React.Component {
 
     render() {
         return (
+			<div>
             <ul className="nav nav-tabs" id="top_bar">
                 <li className="nav-item">
                     <select className="nav-link dropdown-toggle btn btn-primary" value="Új" onChange={this.props.handleNewData}>
@@ -215,45 +260,37 @@ class Menu extends React.Component {
                         <option className="dropdown-item" value="alliances">Szövetség</option>
                     </select>
                 </li>
-                <li className="nav-item">
-                    <select className="nav-link dropdown-toggle btn btn-primary" value="Módosítás" onChange={this.props.handleModifyData}>
-                        <option className="dropdown-header" value="modify">Módosítás</option>
-                        <option className="dropdown-item" value="characters">Karakter</option>
-                        <option className="dropdown-item" value="alliances">Szövetség</option>
-                    </select>
-                </li>
-                <li className="nav-item">
-                    <button className="nav-link btn btn-primary" onClick={ (e) => this.props.handleFilter(e, true) }>Szűrés karakterre</button>
-                </li>
-                <li className="nav-item">
-                    <button className="nav-link btn btn-primary" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
-                </li>
 				<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown} nav="true">
 					<DropdownToggle color="#307485" className="nav-link dropdown-toggle btn btn-primary">
 					Módosítás
 					</DropdownToggle>
 					<DropdownMenu>
 						<DropdownItem header>Módosítás</DropdownItem>
-						{this.renderSubDropdown("characters")}
-						{this.renderSubDropdown("houses")}
-						{this.renderSubDropdown("alliances")}
+						{(["characters","houses","alliances"]).map( tabl => {
+							return this.renderSubDropdown(tabl,(e) => {
+								this.props.modifyData(e, this.state.request);
+								this.props.handleDropdown(e);
+							});
+						})}
 					</DropdownMenu>
 				</Dropdown>
+				{this.renderFilter("characters", (e) => {
+					var nid = -1;
+					for (var i=0; i<this.state.dropdowns.characters.length; ++i) {
+						if(this.state.dropdowns.characters[i] == this.state.request.field.name) {
+							nid = i;
+						}
+					}
+					this.props.handleFilter(e, { id: nid, value: this.state.request.field.value}, true);
+					this.toggleForm(e, "filterCharacters");
+				})}
+                <li className="nav-item">
+                    <button className="nav-link btn btn-primary" onClick={ (e) => this.props.handleFilter(e, false) }>Szűrés megszüntetése</button>
+                </li>
 			</ul>
+			</div>
         )
     }
-/*<li className="nav-item dropdown">
-					<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown}>
-						<DropdownToggle className="nav-link dropdown-toggle">
-						Dropdown
-						</DropdownToggle>
-						<DropdownMenu>
-							<DropdownItem header>D</DropdownItem>
-							{this.renderSubDropdown("characters")}
-						</DropdownMenu>
-					</Dropdown>
-				</li>*/
-
 }
 
 class PostDataForm extends React.Component {
@@ -267,14 +304,14 @@ class PostDataForm extends React.Component {
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                        {Object.keys(this.props.data).map((field,i) => 
+                        {Object.keys(this.props.data).slice(1).map((field,i) => 
                             <th key={i}>{locale[field]}</th>
                         )}
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        {Object.keys(this.props.data).map((field,i) => 
+                        {Object.keys(this.props.data).slice(1).map((field,i) => 
                             <td key={i}><input type="text" value={this.props.data[field]} onChange={ (e) => this.props.onChange(e, field) } /></td>
                         )}
                         {(() => {
@@ -311,7 +348,11 @@ class Main extends React.Component {
             update: false,
             filter: false,
 			show: false,
-            character: ""
+            character: "",
+			filtered: {
+				id: 0,
+				value: 0
+			}
         }
 
         this.rest = require('rest');
@@ -319,8 +360,7 @@ class Main extends React.Component {
         this.client = this.rest.wrap(this.mime);
 
         this.handleNewData = this.handleNewData.bind(this);
-        this.handleModifyData = this.handleModifyData.bind(this);
-        this.handleModifyData2 = this.handleModifyData2.bind(this);
+        this.modifyData = this.modifyData.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
@@ -345,27 +385,9 @@ class Main extends React.Component {
         }));
     }
 
-    handleModifyData(event) {
-        var field = prompt("Kérem adja meg a módosítandó rekord egy mezejét az alábbi formában\n\"Attribútum: Érték\"");
-		var t = event.target.value;
-        this.getHeaders(event.target.value);
-        setTimeout(() => { this.getRecord(t, field); }, 500);
-        this.setState(update(this.state, {
-          selected: { $set: event.target.value },
-          update: { $set: true }
-        }));
-    }
-
-	handleModifyData2(request) {
-        this.getHeaders(request.form.name);
-        this.setState(update(this.state, {
-          selected: { $set: request.form.name },
-          update: { $set: true }
-        }));
-        setTimeout(() => { this.getRecord(request); }, 500);
-    }
-
 	handleDropdown(event) {
+		console.log("dropdownhandler called.");
+		console.log(this.state.show);
 		this.setState(update(this.state, {
           show: { $set: !this.state.show },
         }));
@@ -384,15 +406,21 @@ class Main extends React.Component {
         this.postForm();
     }
 
-    handleFilter(event, whether) {
-        var field;
-        if( whether ) {
-            field = prompt("Kérem adja meg a karakter nevét");
-        }
+    handleFilter(event, field, whether) {
         this.setState(update(this.state, {
           filter: { $set: whether },
-          character: { $set: (field === "undefined" ? "" : field) }
+		  filtered: { $set: field },
+		  update: { $set: true }
         }));
+    }
+
+	modifyData(event, request) {
+        /*this.setState(update(this.state, {
+          ["update"]: { $set: true }
+        }));*/
+        this.getHeaders(request.form.name);
+        setTimeout(() => { this.getRecord(request); }, 500);
+		console.log(this.state);
     }
 
     getTable() {
@@ -437,46 +465,6 @@ class Main extends React.Component {
         });
     }
 
-    /*getRecord(table, field) {
-        var f = field.replace(' ','').split(':');
-        var e = { 
-            "form": {
-                "name": table
-            },
-            "field": {
-                "name": f[0],
-                "value": f[1]
-            }
-        }
-        console.log(e);
-        if (typeof field === "undefined") {
-            alert("something is undefined");
-        } else {
-            this.client({
-                method: 'POST',
-                path: '/getRecord',
-                entity: JSON.stringify(e),
-                headers: {
-                    'Content-Type': "application/json;charset=utf-8"
-                }
-            }).done(response => {
-               console.log(Object.keys(this.state.form));
-               this.zip(
-                 Object.keys(this.state.form),
-                 response.entity[0]
-               ).map(field => {
-                    this.setState(update(this.state, {
-                        form: {
-                            [field[0]]: { $set: field[1] }
-                        }
-                    }));
-               })
-               console.log(response);
-            });
-        }
-        console.log(this.state);
-    }*/
-
 	getRecord(request) {
         if (typeof request.field.value === "undefined") {
             alert("something is undefined");
@@ -489,22 +477,6 @@ class Main extends React.Component {
                     'Content-Type': "application/json;charset=utf-8"
                 }
             }).done(response => {
-				/*this.setState(update(this.state, {
-					form: { $set: { }
-				 }}));*/
-               /*this.zip(
-                 Object.keys(this.state.form),
-                 response.entity[0]
-               ).map(field => {
-                    this.setState(update(this.state, {
-                        form: {
-                            [request.form.name]: {
-								[field[0]]: { $set: field[1] }
-							}
-                        }
-                    }));
-					this.setState(this.state);
-               })*/
 				 this.zip(
                  Object.keys(this.state.form),
                  response.entity[0]
@@ -542,15 +514,15 @@ class Main extends React.Component {
                     data={this.state.form}
 					show={this.state.show}
                     handleNewData={this.handleNewData}
-                    handleModifyData={this.handleModifyData}
-                    handleModifyData2={this.handleModifyData2}
                     handleFilter={this.handleFilter}
 					handleDropdown={this.handleDropdown}
+                    modifyData={this.modifyData}
                 />
                 <Table
                     getTableData={this.getTable}
                     data={this.state.table}
                     filter={this.state.filter}
+                    filtered={this.state.filtered}
                     character={this.state.character}
                 />
                 <PostDataForm

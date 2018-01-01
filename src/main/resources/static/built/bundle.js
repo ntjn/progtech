@@ -121,10 +121,10 @@
 	            React.createElement(
 	              'tr',
 	              null,
-	              this.props.data.thead.map(function (attr) {
+	              this.props.data.thead.map(function (attr, i) {
 	                return React.createElement(
 	                  'th',
-	                  { key: attr },
+	                  { key: i },
 	                  locale[attr]
 	                );
 	              })
@@ -292,7 +292,7 @@
 	                    this.state.dropdowns[selection].map(function (field, i) {
 	                      return React.createElement(
 	                        'option',
-	                        { className: 'dropdown-item', value: field },
+	                        { className: 'dropdown-item', key: i, value: field },
 	                        locale[field]
 	                      );
 	                    })
@@ -323,75 +323,71 @@
 	      var _this7 = this;
 	
 	      return React.createElement(
-	        'div',
-	        null,
+	        _reactstrap.Dropdown,
+	        { key: selection, isOpen: this.state.showForm[selection], toggle: function toggle(e) {
+	            return _this7.toggleForm(e, selection);
+	          } },
 	        React.createElement(
-	          _reactstrap.Dropdown,
-	          { isOpen: this.state.showForm[selection], toggle: function toggle(e) {
-	              return _this7.toggleForm(e, selection);
-	            } },
+	          _reactstrap.DropdownToggle,
+	          { className: 'dropdown-item' },
+	          locale[selection],
+	          React.createElement('b', { className: 'right-caret' })
+	        ),
+	        React.createElement(
+	          _reactstrap.DropdownMenu,
+	          { className: 'dropdown-submenu' },
 	          React.createElement(
-	            _reactstrap.DropdownToggle,
-	            { className: 'dropdown-item' },
-	            locale[selection],
-	            React.createElement('b', { className: 'right-caret' })
-	          ),
-	          React.createElement(
-	            _reactstrap.DropdownMenu,
-	            { className: 'dropdown-submenu' },
+	            'div',
+	            null,
 	            React.createElement(
-	              'div',
-	              null,
+	              'form',
+	              { className: 'card-body', onSubmit: function onSubmit(e) {
+	                  e.preventDefault();
+	                  _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
+	                      form: {
+	                        name: { $set: selection }
+	                      }
+	                    } }));
+	                  submitfunc(e);
+	                } },
 	              React.createElement(
-	                'form',
-	                { className: 'card-body', onSubmit: function onSubmit(e) {
-	                    e.preventDefault();
+	                'label',
+	                { className: 'w100' },
+	                locale["field"],
+	                React.createElement(
+	                  'div',
+	                  null,
+	                  React.createElement(
+	                    'select',
+	                    { className: 'dropdown-toggle btn btn-primary w100', onChange: function onChange(e) {
+	                        _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
+	                            field: {
+	                              name: { $set: e.target.value }
+	                            }
+	                          } }));
+	                      } },
+	                    this.state.dropdowns[selection].map(function (field, i) {
+	                      return React.createElement(
+	                        'option',
+	                        { className: 'dropdown-item', key: i, value: field },
+	                        locale[field]
+	                      );
+	                    })
+	                  )
+	                )
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                locale["value"],
+	                React.createElement('input', { type: 'text', className: 'w100', value: this.state.request.field.value, onChange: function onChange(e) {
 	                    _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
-	                        form: {
-	                          name: { $set: selection }
+	                        field: {
+	                          value: { $set: e.target.value }
 	                        }
 	                      } }));
-	                    submitfunc(e);
-	                  } },
-	                React.createElement(
-	                  'label',
-	                  { className: 'w100' },
-	                  locale["field"],
-	                  React.createElement(
-	                    'div',
-	                    null,
-	                    React.createElement(
-	                      'select',
-	                      { className: 'dropdown-toggle btn btn-primary w100', onChange: function onChange(e) {
-	                          _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
-	                              field: {
-	                                name: { $set: e.target.value }
-	                              }
-	                            } }));
-	                        } },
-	                      this.state.dropdowns[selection].map(function (field, i) {
-	                        return React.createElement(
-	                          'option',
-	                          { className: 'dropdown-item', value: field },
-	                          locale[field]
-	                        );
-	                      })
-	                    )
-	                  )
-	                ),
-	                React.createElement(
-	                  'label',
-	                  null,
-	                  locale["value"],
-	                  React.createElement('input', { type: 'text', className: 'w100', value: this.state.request.field.value, onChange: function onChange(e) {
-	                      _this7.setState((0, _immutabilityHelper2.default)(_this7.state, { request: {
-	                          field: {
-	                            value: { $set: e.target.value }
-	                          }
-	                        } }));
-	                    } }),
-	                  React.createElement('input', { type: 'submit', className: 'btn btn-secondary mt-3 w100' })
-	                )
+	                  } }),
+	                React.createElement('input', { type: 'submit', className: 'btn btn-secondary mt-3 w100' })
 	              )
 	            )
 	          )
@@ -422,24 +418,24 @@
 	              ),
 	              React.createElement(
 	                'option',
-	                { className: 'dropdown-item', value: 'characters' },
+	                { className: 'dropdown-item', value: 'characters', key: '0' },
 	                'Karakter'
 	              ),
 	              React.createElement(
 	                'option',
-	                { className: 'dropdown-item', value: 'houses' },
+	                { className: 'dropdown-item', value: 'houses', key: '1' },
 	                'H\xE1z'
 	              ),
 	              React.createElement(
 	                'option',
-	                { className: 'dropdown-item', value: 'alliances' },
+	                { className: 'dropdown-item', value: 'alliances', key: '2' },
 	                'Sz\xF6vets\xE9g'
 	              )
 	            )
 	          ),
 	          React.createElement(
 	            _reactstrap.Dropdown,
-	            { isOpen: this.props.show, toggle: this.props.handleDropdown, nav: 'true' },
+	            { isOpen: this.props.show, toggle: this.props.handleDropdown, nav: true },
 	            React.createElement(
 	              _reactstrap.DropdownToggle,
 	              { color: '#307485', className: 'nav-link dropdown-toggle btn btn-primary' },
@@ -659,6 +655,7 @@
 	      /*this.setState(update(this.state, {
 	        update: { $set: true }
 	      }), () => console.log(this.state) );*/
+	      // unstrict - hovewer somehow needed because setState has been unable to run
 	      this.state.update = true;
 	      this.getHeaders(request.form.name);
 	      setTimeout(function () {

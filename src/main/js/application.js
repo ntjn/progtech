@@ -45,8 +45,8 @@ class Table extends React.Component {
 				<table className="table table-striped">
 					<thead>
 						<tr>
-						{this.props.data.thead.map((attr) => 
-						  {return <th key={attr}>{locale[attr]}</th>}
+						{this.props.data.thead.map((attr,i) => 
+						  {return <th key={i}>{locale[attr]}</th>}
 						)}
 						</tr>
 					</thead>
@@ -172,7 +172,7 @@ class Menu extends React.Component {
 										}}));
 									}}>
 										{this.state.dropdowns[selection].map((field,i) => 
-											<option className="dropdown-item" value={field}>{locale[field]}</option>
+											<option className="dropdown-item" key={i} value={field}>{locale[field]}</option>
 										)}
 									</select>
 								</div>
@@ -197,54 +197,52 @@ class Menu extends React.Component {
 
 	renderSubDropdown(selection, submitfunc) {
 		return (
-			<div>
-				<Dropdown isOpen={this.state.showForm[selection]} toggle={ (e) => this.toggleForm(e, selection) }>
-					<DropdownToggle className="dropdown-item">
-					{locale[selection]}<b className="right-caret"/>
-					</DropdownToggle>
-					<DropdownMenu className="dropdown-submenu">
-						<div>
-							<form className="card-body" onSubmit={ (e) => {
-								e.preventDefault();
-								this.setState(update(this.state, { request: {
-									form: {
-										name: { $set: selection }
-									},
-								}}));
-								submitfunc(e);
-							}}>
-								<label className="w100">
-								{locale["field"]}
-								<div>
-									<select className="dropdown-toggle btn btn-primary w100" onChange={ (e) => {
-										this.setState(update(this.state, { request: {
-											field: {
-												name: { $set: e.target.value }
-											}
-										}}));
-									}}>
-										{this.state.dropdowns[selection].map((field,i) => 
-											<option className="dropdown-item" value={field}>{locale[field]}</option>
-										)}
-									</select>
-								</div>
-								</label>
-								<label>
-								{locale["value"]}
-								<input type="text" className="w100" value={this.state.request.field.value} onChange={ (e) => {
+			<Dropdown key={selection} isOpen={this.state.showForm[selection]} toggle={ (e) => this.toggleForm(e, selection) }>
+				<DropdownToggle className="dropdown-item">
+				{locale[selection]}<b className="right-caret"/>
+				</DropdownToggle>
+				<DropdownMenu className="dropdown-submenu">
+					<div>
+						<form className="card-body" onSubmit={ (e) => {
+							e.preventDefault();
+							this.setState(update(this.state, { request: {
+								form: {
+									name: { $set: selection }
+								},
+							}}));
+							submitfunc(e);
+						}}>
+							<label className="w100">
+							{locale["field"]}
+							<div>
+								<select className="dropdown-toggle btn btn-primary w100" onChange={ (e) => {
 									this.setState(update(this.state, { request: {
 										field: {
-											value: { $set: e.target.value }
+											name: { $set: e.target.value }
 										}
 									}}));
-								}}/>
-								<input type="submit" className="btn btn-secondary mt-3 w100"/>
-								</label>
-							</form>
-						</div>
-					</DropdownMenu>
-				</Dropdown>
-			</div>
+								}}>
+									{this.state.dropdowns[selection].map((field,i) => 
+										<option className="dropdown-item" key={i} value={field}>{locale[field]}</option>
+									)}
+								</select>
+							</div>
+							</label>
+							<label>
+							{locale["value"]}
+							<input type="text" className="w100" value={this.state.request.field.value} onChange={ (e) => {
+								this.setState(update(this.state, { request: {
+									field: {
+										value: { $set: e.target.value }
+									}
+								}}));
+							}}/>
+							<input type="submit" className="btn btn-secondary mt-3 w100"/>
+							</label>
+						</form>
+					</div>
+				</DropdownMenu>
+			</Dropdown>
 		);
 	}
 
@@ -255,12 +253,12 @@ class Menu extends React.Component {
                 <li className="nav-item">
                     <select className="nav-link dropdown-toggle btn btn-primary" value="Új" onChange={this.props.handleNewData}>
                         <option className="dropdown-header" name="new">Új</option>
-                        <option className="dropdown-item" value="characters">Karakter</option>
-                        <option className="dropdown-item" value="houses">Ház</option>
-                        <option className="dropdown-item" value="alliances">Szövetség</option>
+                        <option className="dropdown-item" value="characters" key="0">Karakter</option>
+                        <option className="dropdown-item" value="houses" key="1">Ház</option>
+                        <option className="dropdown-item" value="alliances" key="2">Szövetség</option>
                     </select>
                 </li>
-				<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown} nav="true">
+				<Dropdown isOpen={this.props.show} toggle={this.props.handleDropdown} nav={true}>
 					<DropdownToggle color="#307485" className="nav-link dropdown-toggle btn btn-primary">
 					Módosítás
 					</DropdownToggle>

@@ -455,7 +455,7 @@
 	              ),
 	              ["characters", "houses", "alliances"].map(function (tabl) {
 	                return _this8.renderSubDropdown(tabl, function (e) {
-	                  _this8.props.modifyData(e, _this8.state.request);
+	                  _this8.props.handleModifyData(e, _this8.state.request);
 	                  _this8.props.handleDropdown(e);
 	                });
 	              })
@@ -595,7 +595,7 @@
 	    _this11.client = _this11.rest.wrap(_this11.mime);
 	
 	    _this11.handleNewData = _this11.handleNewData.bind(_this11);
-	    _this11.modifyData = _this11.modifyData.bind(_this11);
+	    _this11.handleModifyData = _this11.handleModifyData.bind(_this11);
 	    _this11.handleFormChange = _this11.handleFormChange.bind(_this11);
 	    _this11.handleFormSubmit = _this11.handleFormSubmit.bind(_this11);
 	    _this11.handleFilter = _this11.handleFilter.bind(_this11);
@@ -626,8 +626,6 @@
 	  }, {
 	    key: 'handleDropdown',
 	    value: function handleDropdown(event) {
-	      console.log("dropdownhandler called.");
-	      console.log(this.state.show);
 	      this.setState((0, _immutabilityHelper2.default)(this.state, {
 	        show: { $set: !this.state.show }
 	      }));
@@ -650,23 +648,22 @@
 	    value: function handleFilter(event, field, whether) {
 	      this.setState((0, _immutabilityHelper2.default)(this.state, {
 	        filter: { $set: whether },
-	        filtered: { $set: field },
-	        update: { $set: true }
+	        filtered: { $set: field }
 	      }));
 	    }
 	  }, {
-	    key: 'modifyData',
-	    value: function modifyData(event, request) {
+	    key: 'handleModifyData',
+	    value: function handleModifyData(event, request) {
 	      var _this12 = this;
 	
 	      /*this.setState(update(this.state, {
-	        ["update"]: { $set: true }
-	      }));*/
+	        update: { $set: true }
+	      }), () => console.log(this.state) );*/
+	      this.state.update = true;
 	      this.getHeaders(request.form.name);
 	      setTimeout(function () {
 	        _this12.getRecord(request);
 	      }, 500);
-	      console.log(this.state);
 	    }
 	  }, {
 	    key: 'getTable',
@@ -766,7 +763,7 @@
 	          handleNewData: this.handleNewData,
 	          handleFilter: this.handleFilter,
 	          handleDropdown: this.handleDropdown,
-	          modifyData: this.modifyData
+	          handleModifyData: this.handleModifyData
 	        }),
 	        React.createElement(Table, {
 	          getTableData: this.getTable,

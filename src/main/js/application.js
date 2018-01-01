@@ -268,7 +268,7 @@ class Menu extends React.Component {
 						<DropdownItem header>Módosítás</DropdownItem>
 						{(["characters","houses","alliances"]).map( tabl => {
 							return this.renderSubDropdown(tabl,(e) => {
-								this.props.modifyData(e, this.state.request);
+								this.props.handleModifyData(e, this.state.request);
 								this.props.handleDropdown(e);
 							});
 						})}
@@ -360,7 +360,7 @@ class Main extends React.Component {
         this.client = this.rest.wrap(this.mime);
 
         this.handleNewData = this.handleNewData.bind(this);
-        this.modifyData = this.modifyData.bind(this);
+        this.handleModifyData = this.handleModifyData.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
@@ -386,8 +386,6 @@ class Main extends React.Component {
     }
 
 	handleDropdown(event) {
-		console.log("dropdownhandler called.");
-		console.log(this.state.show);
 		this.setState(update(this.state, {
           show: { $set: !this.state.show },
         }));
@@ -410,17 +408,17 @@ class Main extends React.Component {
         this.setState(update(this.state, {
           filter: { $set: whether },
 		  filtered: { $set: field },
-		  update: { $set: true }
         }));
     }
 
-	modifyData(event, request) {
+	handleModifyData(event, request) {
         /*this.setState(update(this.state, {
-          ["update"]: { $set: true }
-        }));*/
+          update: { $set: true }
+        }), () => console.log(this.state) );*/
+		// unstrict - hovewer somehow needed because setState has been unable to run
+		this.state.update = true;
         this.getHeaders(request.form.name);
         setTimeout(() => { this.getRecord(request); }, 500);
-		console.log(this.state);
     }
 
     getTable() {
@@ -516,7 +514,7 @@ class Main extends React.Component {
                     handleNewData={this.handleNewData}
                     handleFilter={this.handleFilter}
 					handleDropdown={this.handleDropdown}
-                    modifyData={this.modifyData}
+                    handleModifyData={this.handleModifyData}
                 />
                 <Table
                     getTableData={this.getTable}

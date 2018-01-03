@@ -23,7 +23,29 @@ var locale = {
 	houses: 'Házak',
 	alliances: 'Szövetségek',
 	field: 'Mező',
-	value: 'Érték'
+	value: 'Érték',
+	loaded: 'Oldal betöltve',
+	filter_on: 'Szűrés bekapcsolva',
+	filter_off: 'Szűrés kikapcsolva',
+	upload_successful: 'Sikeres feltöltés',
+	modify_successful: 'Sikeres módosítás',
+	modify_err: (field) => { return 'A(z) \'' + locale[field] + '\' mező hibás'; }
+};
+
+var sqlToJs = {
+	'varchar': 'string',
+	'int': 'int',
+	'tinyint': 'bool'
+};
+
+var validate = {
+	'int': (p, q) => { return !isNaN(p) && ((p) => { return (p | 0) === p && p >= 0; })(parseFloat(p)) },
+	'string': (p, q) => { return p.length <= q.split(/\(|\)/)[1] && typeof(p) != "undefined" && !validate['int'](p,q); },
+	'bool': (p, q) => { return p == "true" || p == "false" || p == "0" || p == "1"; }
+};
+
+function validateData(value, type) {
+	return validate[sqlToJs[type.split(/\(/)[0]]](value, type);
 }
 
 function zip(p,q) {
@@ -338,6 +360,7 @@ class Main extends React.Component {
         super(props);
         this.state = {
             form: { },
+			formTypes: { },
             table: {
                 thead: Array(16).fill(null),
                 tbody: Array(64).fill(Array(16).fill(null))
@@ -350,6 +373,10 @@ class Main extends React.Component {
 			filtered: {
 				id: 0,
 				value: 0
+			},
+			status: {
+				msg: "Oldal betöltve",
+				type: "alert-success"
 			}
         }
 
@@ -363,6 +390,9 @@ class Main extends React.Component {
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
 		this.handleDropdown = this.handleDropdown.bind(this);
+
+		this.updateStatus = this.updateStatus.bind(this);
+		this.updateStatusForced = this.updateStatusForced.bind(this);
 
         this.zip = this.zip.bind(this);
     }
@@ -399,10 +429,32 @@ class Main extends React.Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        this.postForm();
+
+		var whetherValid = true;
+
+		Object.keys(this.state.form).map( (d) => {
+			console.log(validateData(this.state.form[d], this.state.formTypes[d]));
+			if(this.state.formTypes[d].split(/\(/)[0] == "tinyint") {
+				this.state.form[d] = this.state.form[d] == "0" ? "false" : "true"
+			}
+			if(!validateData(this.state.form[d], this.state.formTypes[d]) && d != "id") {
+				this.updateStatus("A " + d + " mező értéke hibás.", "alert-danger");
+				this.updateStatus(locale['modify_err'](d), "alert-danger");
+				whetherValid = false;
+			}
+		});
+
+		if(whetherValid) {
+        	this.postForm();
+			// TODO check response
+			this.updateStatus(locale[(this.state.update ? "modify" : "upload") + "_successful"]);
+		}
+
+		console.log(this.state);
     }
 
     handleFilter(event, field, whether) {
+		this.updateStatusForced(locale['filter_' + (whether ? "on" : "off")]);
         this.setState(update(this.state, {
           filter: { $set: whether },
 		  filtered: { $set: field },
@@ -415,6 +467,7 @@ class Main extends React.Component {
         }), () => console.log(this.state) );*/
 		// unstrict - hovewer somehow needed because setState has been unable to run
 		this.state.update = true;
+		this.state.selected = request.form.name;
         this.getHeaders(request.form.name);
         setTimeout(() => { this.getRecord(request); }, 500);
     }
@@ -455,10 +508,14 @@ class Main extends React.Component {
                 this.setState(update(this.state, {
                     form: {
                         [row[0]]: { $set: "" }
-                    }
+                    },
+                    formTypes: {
+                        [row[0]]: { $set: row[1] }
+                    },
                 }));
            })
         });
+		console.log(this.state);
     }
 
 	getRecord(request) {
@@ -499,6 +556,20 @@ class Main extends React.Component {
         });
     }
 
+	updateStatus(message, alertType = "alert-success") {
+		this.setState(update(this.state, {
+		  status: {
+			msg: { $set: message },
+			type: { $set: alertType }
+		  }
+		}));
+	}
+	
+	updateStatusForced(message, alertType = "alert-success") {
+		this.state.status.msg =  message;
+		this.state.status.type = alertType;
+	}
+
     componentDidMount() {
         this.getTable();
     }
@@ -527,6 +598,9 @@ class Main extends React.Component {
                     onChange={this.handleFormChange}
                     handleSubmit={this.handleFormSubmit}
                 />
+				<div className={"alert " + this.state.status.type}>
+					{this.state.status.msg}
+				</div>
             </div>
         );
     }

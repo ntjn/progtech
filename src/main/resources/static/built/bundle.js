@@ -618,7 +618,7 @@
 					value: 0
 				},
 				status: {
-					msg: "Oldal betöltve",
+					msg: "Adatok betöltve",
 					type: "alert-success"
 				}
 			};
